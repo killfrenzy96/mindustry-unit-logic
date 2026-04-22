@@ -1,0 +1,666 @@
+# My own cargo transportation logic.
+# Balances up to 12 different items between 2 containers.
+
+# `unitType`: The unit used for transportation. `flare` is a great choice for fast low quantity item transport. `zenith` or `mega` is a good choice if high throughput is required.
+# `bindLimit`: The amount of units to use for transportation. Maximum of 24 units.
+# `source`: The first container.
+# `target`: The second container.
+# `idleAt`: Where the unit should idle when its tasks are completed. If set to `null`, this will instead unbind the unit, which frees up the unit for other processors to use.
+# `sourceWanted` : For the first container, items will not be pushed to this container of it has more than the specified percent of items. Setting this too high may accidentally fill the container, resulting in delivery ships hovering over the container.
+# `targetWanted`: For the second container, items will not be pushed to this container of it has more than the specified percent of items. Setting this too high may accidentally fill the container, resulting in delivery ships hovering over the container.
+# `keepMinimum`: Items will not be pulled from a container if it has less than the specified percent of items (from 0.0 to 1.0).
+# `minDifference`: The minimum difference in percentage of the fill levels between both containers. If this is set too low, units may end up wasting time by repeatedly picking up and dropping items to the same container.
+# `refreshInterval`: The minimum interval between inventory refreshing. Refreshing the inventory calulations can be very slow, reducing unit responsiveness.
+# `item_name`: Just a field I use to copy and paste item names. Otherwise, it does nothing.
+# `item1` to `item12`: The items to interact with. Do not place a `null` between valid items.
+
+# Important note: Setting either `sourceWanted` or `targetWanted` to `0` will effectively result in a one-way item transfer.
+
+Start_Init:
+		jump End_Init equal init 1
+
+		set gitHub https://github.com/killfrenzy96/mindustry-unit-logic
+		set unitType @flare
+		set bindLimit 8
+		set source core
+		set target vault1
+		set idleAt null
+		set sourceWanted 0.5
+		set targetWanted 0.5
+		set keepMinimum 0.01
+		set minDifference 0.025
+		set refreshInterval 3000
+
+		sensor item_name copy_this @copper
+		set item1 null
+		set item2 null
+		set item3 null
+		set item4 null
+		set item5 null
+		set item6 null
+		set item7 null
+		set item8 null
+		set item9 null
+		set item10 null
+		set item11 null
+		set item12 null
+
+		op mul unitIndexLimit bindLimit 2
+		op sub unitIndexLimit unitIndexLimit 1
+		jump Start_SelectUnit equal @unit null
+
+		sensor sourceDead source @dead
+		sensor targetDead target @dead
+		sensor idleAtDead idleAt @dead
+		set idleAtX @thisx
+		set idleAtY @thisy
+
+		jump Init_SourceValidationEnd equal sourceDead true
+		sensor sourceX source @x
+		sensor sourceY source @y
+		sensor sourceCapacity source @itemCapacity
+		op mul sourceMinItems sourceCapacity keepMinimum
+	Init_SourceValidationEnd:
+
+		jump Init_TargetValidationEnd equal targetDead true
+		sensor targetX target @x
+		sensor targetY target @y
+		sensor targetCapacity target @itemCapacity
+	Init_TargetValidationEnd:
+
+		jump Init_IdleAtValidationEnd equal idleAt null
+		jump Init_IdleAtValidationEnd equal idleAtDead true
+		sensor idleAtX idleAt @x
+		sensor idleAtY idleAt @y
+		ucontrol move idleAtX idleAtY 0 0 0
+	Init_IdleAtValidationEnd:
+
+		jump ValidateContainers_ResetInit equal source null
+		jump ValidateContainers_ResetInit equal target null
+		jump ValidateContainers_ResetInit equal item1 null
+		set init 1
+End_Init:
+
+
+Start_SelectUnit:
+		op add @counter @counter unitIndex
+		ubind unitBind01
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind02
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind03
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind04
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind05
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind06
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind07
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind08
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind09
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind10
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind11
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind12
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind13
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind14
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind15
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind16
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind17
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind18
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind19
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind20
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind21
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind22
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind23
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind24
+		jump SelectUnit_ValidateUnit always 0 0
+
+	SelectUnit_ValidateUnit:
+		sensor unitDead @unit @dead
+		sensor unitController @unit @controller
+		op notEqual unitNotOurs unitController @this
+		op or somethingWrong unitDead unitNotOurs
+		jump SelectUnit_Iterate equal somethingWrong false
+
+	SelectUnit_IdleActions:
+		jump SelectUnit_BindNewUnit equal isIdle false
+		jump SelectUnit_Iterate always 0 0
+
+	SelectUnit_BindNewUnit:
+		ubind unitType
+		jump SelectUnit_BindNewUnit equal @unit null
+		sensor newUnitController @unit @controller
+		jump SelectUnit_IterateAndRestart equal newUnitController @this
+		jump SelectUnit_BindNewUnit notEqual newUnitController @unit
+		ucontrol stop 0 0 0 0 0
+
+		ulocate building core false @copper coreX coreY coreFound core
+		sensor unitItemCount @unit @totalItems
+		jump SelectUnit_UnitEmpty equal unitItemCount 0
+		ucontrol itemDrop @air 9001 0 0 0
+	SelectUnit_UnitEmpty:
+
+		op add @counter @counter unitIndex
+		set unitBind01 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind02 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind03 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind04 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind05 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind06 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind07 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind08 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind09 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind10 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind11 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind12 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind13 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind14 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind15 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind16 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind17 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind18 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind19 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind20 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind21 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind22 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind23 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind24 @unit
+		jump SelectUnit_Iterate always 0 0
+
+	SelectUnit_IterateAndRestart:
+		op add unitIndex unitIndex 2
+		jump SelectUnit_IterateAndRestartEnd lessThanEq unitIndex unitIndexLimit
+		set unitIndex 0
+		set unitsBinded unitsCounter
+		set unitsCounter 0
+	SelectUnit_IterateAndRestartEnd:
+		jump Start_SelectUnit always 0 0
+
+	SelectUnit_Iterate:
+		op add unitIndex unitIndex 2
+		op add unitsCounter unitsCounter 1
+		jump SelectUnit_IterateEnd lessThanEq unitIndex unitIndexLimit
+		set unitIndex 0
+		set unitsBinded unitsCounter
+		set unitsCounter 0
+	SelectUnit_IterateEnd:
+
+		jump Start_Init equal init 0
+End_SelectUnit:
+
+
+Start_ValidateContainers:
+		jump ValidateContainers_Begin equal isIdle true
+		ulocate building core false @copper coreX coreY coreFound core
+
+	ValidateContainers_Begin:
+		sensor sourceDead source @dead
+		sensor targetDead target @dead
+		op or somethingDead sourceDead targetDead
+		jump End_ValidateContainers equal somethingDead false
+
+	ValidateContainers_ResetInit:
+		set init 0
+		jump End_CargoBalancer always 0 0
+		end
+End_ValidateContainers:
+
+
+Start_CargoBalancer:
+		op sub refreshTimeElapsed @time lastRefresh
+		jump CargoBalancer_Begin lessThan refreshTimeElapsed refreshInterval
+
+		set sourceItemNeeded null
+		set targetItemNeeded null
+		set sourceDifference minDifference
+		set targetDifference minDifference
+
+		jump CargoBalancer_SetupVariables equal item1 null
+		sensor sCount1 source item1
+		sensor tCount1 target item1
+		op div sFill1 sCount1 sourceCapacity
+		op div tFill1 tCount1 targetCapacity
+		op sub stDifference1 sFill1 tFill1
+		op abs stDifference1 stDifference1 0
+		op mul sScore1 sFill1 targetWanted
+		op mul tScore1 tFill1 sourceWanted
+		jump CargoBalancer_Item1TargetLower lessThan tScore1 sScore1
+		jump CargoBalancer_Item1End lessThanEq stDifference1 sourceDifference
+		jump CargoBalancer_Item1End greaterThanEq sFill1 sourceWanted
+		jump CargoBalancer_Item1End lessThanEq tFill1 keepMinimum
+		set sourceItemNeeded item1
+		set sourceDifference stDifference1
+	CargoBalancer_Item1TargetLower:
+		jump CargoBalancer_Item1End lessThanEq stDifference1 targetDifference
+		jump CargoBalancer_Item1End greaterThanEq tFill1 targetWanted
+		jump CargoBalancer_Item1End lessThanEq sFill1 keepMinimum
+		set targetItemNeeded item1
+		set targetDifference stDifference1
+	CargoBalancer_Item1End:
+
+		jump CargoBalancer_SetupVariables equal item2 null
+		sensor sCount2 source item2
+		sensor tCount2 target item2
+		op div sFill2 sCount2 sourceCapacity
+		op div tFill2 tCount2 targetCapacity
+		op sub stDifference2 sFill2 tFill2
+		op abs stDifference2 stDifference2 0
+		op mul sScore2 sFill2 targetWanted
+		op mul tScore2 tFill2 sourceWanted
+		jump CargoBalancer_Item2TargetLower lessThan tScore2 sScore2
+		jump CargoBalancer_Item2End lessThanEq stDifference2 sourceDifference
+		jump CargoBalancer_Item2End greaterThanEq sFill2 sourceWanted
+		jump CargoBalancer_Item2End lessThanEq tFill2 keepMinimum
+		set sourceItemNeeded item2
+		set sourceDifference stDifference2
+	CargoBalancer_Item2TargetLower:
+		jump CargoBalancer_Item2End lessThanEq stDifference2 targetDifference
+		jump CargoBalancer_Item2End greaterThanEq tFill2 targetWanted
+		jump CargoBalancer_Item2End lessThanEq sFill2 keepMinimum
+		set targetItemNeeded item2
+		set targetDifference stDifference2
+	CargoBalancer_Item2End:
+
+		jump CargoBalancer_SetupVariables equal item3 null
+		sensor sCount3 source item3
+		sensor tCount3 target item3
+		op div sFill3 sCount3 sourceCapacity
+		op div tFill3 tCount3 targetCapacity
+		op sub stDifference3 sFill3 tFill3
+		op abs stDifference3 stDifference3 0
+		op mul sScore3 sFill3 targetWanted
+		op mul tScore3 tFill3 sourceWanted
+		jump CargoBalancer_Item3TargetLower lessThan tScore3 sScore3
+		jump CargoBalancer_Item3End lessThanEq stDifference3 sourceDifference
+		jump CargoBalancer_Item3End greaterThanEq sFill3 sourceWanted
+		jump CargoBalancer_Item3End lessThanEq tFill3 keepMinimum
+		set sourceItemNeeded item3
+		set sourceDifference stDifference3
+	CargoBalancer_Item3TargetLower:
+		jump CargoBalancer_Item3End lessThanEq stDifference3 targetDifference
+		jump CargoBalancer_Item3End greaterThanEq tFill3 targetWanted
+		jump CargoBalancer_Item3End lessThanEq sFill3 keepMinimum
+		set targetItemNeeded item3
+		set targetDifference stDifference3
+	CargoBalancer_Item3End:
+
+		jump CargoBalancer_SetupVariables equal item4 null
+		sensor sCount4 source item4
+		sensor tCount4 target item4
+		op div sFill4 sCount4 sourceCapacity
+		op div tFill4 tCount4 targetCapacity
+		op sub stDifference4 sFill4 tFill4
+		op abs stDifference4 stDifference4 0
+		op mul sScore4 sFill4 targetWanted
+		op mul tScore4 tFill4 sourceWanted
+		jump CargoBalancer_Item4TargetLower lessThan tScore4 sScore4
+		jump CargoBalancer_Item4End lessThanEq stDifference4 sourceDifference
+		jump CargoBalancer_Item4End greaterThanEq sFill4 sourceWanted
+		jump CargoBalancer_Item4End lessThanEq tFill4 keepMinimum
+		set sourceItemNeeded item4
+		set sourceDifference stDifference4
+	CargoBalancer_Item4TargetLower:
+		jump CargoBalancer_Item4End lessThanEq stDifference4 targetDifference
+		jump CargoBalancer_Item4End greaterThanEq tFill4 targetWanted
+		jump CargoBalancer_Item4End lessThanEq sFill4 keepMinimum
+		set targetItemNeeded item4
+		set targetDifference stDifference4
+	CargoBalancer_Item4End:
+
+		jump CargoBalancer_SetupVariables equal item5 null
+		sensor sCount5 source item5
+		sensor tCount5 target item5
+		op div sFill5 sCount5 sourceCapacity
+		op div tFill5 tCount5 targetCapacity
+		op sub stDifference5 sFill5 tFill5
+		op abs stDifference5 stDifference5 0
+		op mul sScore5 sFill5 targetWanted
+		op mul tScore5 tFill5 sourceWanted
+		jump CargoBalancer_Item5TargetLower lessThan tScore5 sScore5
+		jump CargoBalancer_Item5End lessThanEq stDifference5 sourceDifference
+		jump CargoBalancer_Item5End greaterThanEq sFill5 sourceWanted
+		jump CargoBalancer_Item5End lessThanEq tFill5 keepMinimum
+		set sourceItemNeeded item5
+		set sourceDifference stDifference5
+	CargoBalancer_Item5TargetLower:
+		jump CargoBalancer_Item5End lessThanEq stDifference5 targetDifference
+		jump CargoBalancer_Item5End greaterThanEq tFill5 targetWanted
+		jump CargoBalancer_Item5End lessThanEq sFill5 keepMinimum
+		set targetItemNeeded item5
+		set targetDifference stDifference5
+	CargoBalancer_Item5End:
+
+		jump CargoBalancer_SetupVariables equal item6 null
+		sensor sCount6 source item6
+		sensor tCount6 target item6
+		op div sFill6 sCount6 sourceCapacity
+		op div tFill6 tCount6 targetCapacity
+		op sub stDifference6 sFill6 tFill6
+		op abs stDifference6 stDifference6 0
+		op mul sScore6 sFill6 targetWanted
+		op mul tScore6 tFill6 sourceWanted
+		jump CargoBalancer_Item6TargetLower lessThan tScore6 sScore6
+		jump CargoBalancer_Item6End lessThanEq stDifference6 sourceDifference
+		jump CargoBalancer_Item6End greaterThanEq sFill6 sourceWanted
+		jump CargoBalancer_Item6End lessThanEq tFill6 keepMinimum
+		set sourceItemNeeded item6
+		set sourceDifference stDifference6
+	CargoBalancer_Item6TargetLower:
+		jump CargoBalancer_Item6End lessThanEq stDifference6 targetDifference
+		jump CargoBalancer_Item6End greaterThanEq tFill6 targetWanted
+		jump CargoBalancer_Item6End lessThanEq sFill6 keepMinimum
+		set targetItemNeeded item6
+		set targetDifference stDifference6
+	CargoBalancer_Item6End:
+
+		jump CargoBalancer_SetupVariables equal item7 null
+		sensor sCount7 source item7
+		sensor tCount7 target item7
+		op div sFill7 sCount7 sourceCapacity
+		op div tFill7 tCount7 targetCapacity
+		op sub stDifference7 sFill7 tFill7
+		op abs stDifference7 stDifference7 0
+		op mul sScore7 sFill7 targetWanted
+		op mul tScore7 tFill7 sourceWanted
+		jump CargoBalancer_Item7TargetLower lessThan tScore7 sScore7
+		jump CargoBalancer_Item7End lessThanEq stDifference7 sourceDifference
+		jump CargoBalancer_Item7End greaterThanEq sFill7 sourceWanted
+		jump CargoBalancer_Item7End lessThanEq tFill7 keepMinimum
+		set sourceItemNeeded item7
+		set sourceDifference stDifference7
+	CargoBalancer_Item7TargetLower:
+		jump CargoBalancer_Item7End lessThanEq stDifference7 targetDifference
+		jump CargoBalancer_Item7End greaterThanEq tFill7 targetWanted
+		jump CargoBalancer_Item7End lessThanEq sFill7 keepMinimum
+		set targetItemNeeded item7
+		set targetDifference stDifference7
+	CargoBalancer_Item7End:
+
+		jump CargoBalancer_SetupVariables equal item8 null
+		sensor sCount8 source item8
+		sensor tCount8 target item8
+		op div sFill8 sCount8 sourceCapacity
+		op div tFill8 tCount8 targetCapacity
+		op sub stDifference8 sFill8 tFill8
+		op abs stDifference8 stDifference8 0
+		op mul sScore8 sFill8 targetWanted
+		op mul tScore8 tFill8 sourceWanted
+		jump CargoBalancer_Item8TargetLower lessThan tScore8 sScore8
+		jump CargoBalancer_Item8End lessThanEq stDifference8 sourceDifference
+		jump CargoBalancer_Item8End greaterThanEq sFill8 sourceWanted
+		jump CargoBalancer_Item8End lessThanEq tFill8 keepMinimum
+		set sourceItemNeeded item8
+		set sourceDifference stDifference8
+	CargoBalancer_Item8TargetLower:
+		jump CargoBalancer_Item8End lessThanEq stDifference8 targetDifference
+		jump CargoBalancer_Item8End greaterThanEq tFill8 targetWanted
+		jump CargoBalancer_Item8End lessThanEq sFill8 keepMinimum
+		set targetItemNeeded item8
+		set targetDifference stDifference8
+	CargoBalancer_Item8End:
+
+		jump CargoBalancer_SetupVariables equal item9 null
+		sensor sCount9 source item9
+		sensor tCount9 target item9
+		op div sFill9 sCount9 sourceCapacity
+		op div tFill9 tCount9 targetCapacity
+		op sub stDifference9 sFill9 tFill9
+		op abs stDifference9 stDifference9 0
+		op mul sScore9 sFill9 targetWanted
+		op mul tScore9 tFill9 sourceWanted
+		jump CargoBalancer_Item9TargetLower lessThan tScore9 sScore9
+		jump CargoBalancer_Item9End lessThanEq stDifference9 sourceDifference
+		jump CargoBalancer_Item9End greaterThanEq sFill9 sourceWanted
+		jump CargoBalancer_Item9End lessThanEq tFill9 keepMinimum
+		set sourceItemNeeded item9
+		set sourceDifference stDifference9
+	CargoBalancer_Item9TargetLower:
+		jump CargoBalancer_Item9End lessThanEq stDifference9 targetDifference
+		jump CargoBalancer_Item9End greaterThanEq tFill9 targetWanted
+		jump CargoBalancer_Item9End lessThanEq sFill9 keepMinimum
+		set targetItemNeeded item9
+		set targetDifference stDifference9
+	CargoBalancer_Item9End:
+
+		jump CargoBalancer_SetupVariables equal item10 null
+		sensor sCount10 source item10
+		sensor tCount10 target item10
+		op div sFill10 sCount10 sourceCapacity
+		op div tFill10 tCount10 targetCapacity
+		op sub stDifference10 sFill10 tFill10
+		op abs stDifference10 stDifference10 0
+		op mul sScore10 sFill10 targetWanted
+		op mul tScore10 tFill10 sourceWanted
+		jump CargoBalancer_Item10TargetLower lessThan tScore10 sScore10
+		jump CargoBalancer_Item10End lessThanEq stDifference10 sourceDifference
+		jump CargoBalancer_Item10End greaterThanEq sFill10 sourceWanted
+		jump CargoBalancer_Item10End lessThanEq tFill10 keepMinimum
+		set sourceItemNeeded item10
+		set sourceDifference stDifference10
+	CargoBalancer_Item10TargetLower:
+		jump CargoBalancer_Item10End lessThanEq stDifference10 targetDifference
+		jump CargoBalancer_Item10End greaterThanEq tFill10 targetWanted
+		jump CargoBalancer_Item10End lessThanEq sFill10 keepMinimum
+		set targetItemNeeded item10
+		set targetDifference stDifference10
+	CargoBalancer_Item10End:
+
+		jump CargoBalancer_SetupVariables equal item11 null
+		sensor sCount11 source item11
+		sensor tCount11 target item11
+		op div sFill11 sCount11 sourceCapacity
+		op div tFill11 tCount11 targetCapacity
+		op sub stDifference11 sFill11 tFill11
+		op abs stDifference11 stDifference11 0
+		op mul sScore11 sFill11 targetWanted
+		op mul tScore11 tFill11 sourceWanted
+		jump CargoBalancer_Item11TargetLower lessThan tScore11 sScore11
+		jump CargoBalancer_Item11End lessThanEq stDifference11 sourceDifference
+		jump CargoBalancer_Item11End greaterThanEq sFill11 sourceWanted
+		jump CargoBalancer_Item11End lessThanEq tFill11 keepMinimum
+		set sourceItemNeeded item11
+		set sourceDifference stDifference11
+	CargoBalancer_Item11TargetLower:
+		jump CargoBalancer_Item11End lessThanEq stDifference11 targetDifference
+		jump CargoBalancer_Item11End greaterThanEq tFill11 targetWanted
+		jump CargoBalancer_Item11End lessThanEq sFill11 keepMinimum
+		set targetItemNeeded item11
+		set targetDifference stDifference11
+	CargoBalancer_Item11End:
+
+		jump CargoBalancer_SetupVariables equal item12 null
+		sensor sCount12 source item12
+		sensor tCount12 target item12
+		op div sFill12 sCount12 sourceCapacity
+		op div tFill12 tCount12 targetCapacity
+		op sub stDifference12 sFill12 tFill12
+		op abs stDifference12 stDifference12 0
+		op mul sScore12 sFill12 targetWanted
+		op mul tScore12 tFill12 sourceWanted
+		jump CargoBalancer_Item12TargetLower lessThan tScore12 sScore12
+		jump CargoBalancer_Item12End lessThanEq stDifference12 sourceDifference
+		jump CargoBalancer_Item12End greaterThanEq sFill12 sourceWanted
+		jump CargoBalancer_Item12End lessThanEq tFill12 keepMinimum
+		set sourceItemNeeded item12
+		set sourceDifference stDifference12
+	CargoBalancer_Item12TargetLower:
+		jump CargoBalancer_Item12End lessThanEq stDifference12 targetDifference
+		jump CargoBalancer_Item12End greaterThanEq tFill12 targetWanted
+		jump CargoBalancer_Item12End lessThanEq sFill12 keepMinimum
+		set targetItemNeeded item12
+		set targetDifference stDifference12
+	CargoBalancer_Item12End:
+
+	CargoBalancer_SetupVariables:
+		op or itemPickupValid sourceItem targetItem
+		op max stMaxDifference sourceDifference targetDifference
+		set lastRefresh @time
+
+	CargoBalancer_Begin:
+		set sourceItem sourceItemNeeded
+		set targetItem targetItemNeeded
+		sensor sourceCount source sourceItemNeeded
+		sensor targetCount target targetItemNeeded
+		op div sourceFill sourceCount sourceCapacity
+		op div targetFill targetCount targetCapacity
+		sensor unitItemType @unit @firstItem
+		sensor unitItemCount @unit @totalItems
+		sensor unitController @unit @controller
+		jump CargoBalancer_ValidateDropoffUnit greaterThan unitItemCount 0
+		jump CargoBalancer_HandleItemPickup equal itemPickupValid true
+		jump End_CargoBalancer always 0 0
+		end
+
+		CargoBalancer_ValidateDropoffUnit:
+			jump CargoBalancer_ValidateDropoffUnitContinue equal unitController @this
+			end
+		CargoBalancer_ValidateDropoffUnitContinue:
+
+		sensor heldSourceCount source unitItemType
+		sensor heldTargetCount target unitItemType
+		op div heldSourceFill heldSourceCount sourceCapacity
+		op mul heldSourceScore heldSourceFill targetWanted
+		op div heldTargetFill heldTargetCount targetCapacity
+		op mul heldTargetScore heldTargetFill sourceWanted
+		jump CargoBalancer_DropItemsToTarget greaterThan heldSourceScore heldTargetScore
+
+	CargoBalancer_DropItemsToSource:
+			ucontrol boost 1 0 0 0 0
+			ucontrol itemDrop source 9001 0 0 0
+			ucontrol flag @time 0 0 0 0
+			ucontrol within sourceX sourceY 5 withinRange 0
+			op greaterThanEq shouldReverse targetFill targetWanted
+			op land shouldReverse shouldReverse withinRange
+			op lessThan sourceNotFull heldSourceFill 0.899
+			op land shouldReverse shouldReverse sourceNotFull
+			jump CargoBalancer_ApproachDropoffTarget equal shouldReverse true
+		CargoBalancer_ApproachDropoffSource:
+			ucontrol move sourceX sourceY 5 0 0
+			end
+
+	CargoBalancer_DropItemsToTarget:
+			ucontrol boost 1 0 0 0 0
+			ucontrol itemDrop target 9001 0 0 0
+			ucontrol flag @time 0 0 0 0
+			ucontrol within targetX targetY 5 withinRange 0
+			op greaterThanEq shouldReverse sourceFill sourceWanted
+			op land shouldReverse shouldReverse withinRange
+			op lessThan targetNotFull heldTargetFill 0.899
+			op land shouldReverse shouldReverse targetNotFull
+			jump CargoBalancer_ApproachDropoffSource equal shouldReverse true
+		CargoBalancer_ApproachDropoffTarget:
+			ucontrol move targetX targetY 5 0 0
+			end
+
+	CargoBalancer_HandleItemPickup:
+		set isIdle false
+		sensor unitX @unit @x
+		sensor unitY @unit @y
+		op sub sourceDistanceX unitX sourceX
+		op sub sourceDistanceY unitY sourceY
+		op len sourceDistance sourceDistanceX sourceDistanceY
+		op sub targetDistanceX unitX targetX
+		op sub targetDistanceY unitY targetY
+		op len targetDistance targetDistanceX targetDistanceY
+		op mul sourceScore sourceDistance sourceWanted
+		op mul targetScore targetDistance targetWanted
+
+		jump CargoBalancer_PrioritizeTargetContainer lessThan sourceScore targetScore
+		jump CargoBalancer_PickupItemsFromTarget notEqual sourceItem null
+	CargoBalancer_PrioritizeTargetContainer:
+		jump CargoBalancer_PickupItemsFromSource notEqual targetItem null
+		jump CargoBalancer_PickupItemsFromTarget notEqual sourceItem null
+		set debug @second
+		end
+
+	CargoBalancer_PickupItemsFromSource:
+		CargoBalancer_ValidatePickupSourceUnit:
+			jump CargoBalancer_ValidatePickupSourceUnitContinue equal unitController @this
+			end
+		CargoBalancer_ValidatePickupSourceUnitContinue:
+
+			ucontrol boost 1 0 0 0 0
+			ucontrol itemTake source targetItem 9001 0 0
+			ucontrol within sourceX sourceY 5 withinRange 0
+			sensor unitLastDrop @unit @flag
+			op sub lastDropElapsed @time unitLastDrop
+			op greaterThan shouldReverse lastDropElapsed 1500
+			op land shouldReverse shouldReverse withinRange
+			jump CargoBalancer_ApproachPickupTarget equal shouldReverse true
+		CargoBalancer_ApproachPickupSource:
+			ucontrol move sourceX sourceY 5 0 0
+			end
+
+	CargoBalancer_PickupItemsFromTarget:
+		CargoBalancer_ValidatePickupTargetUnit:
+			jump CargoBalancer_ValidatePickupTargetUnitContinue equal unitController @this
+			end
+		CargoBalancer_ValidatePickupTargetUnitContinue:
+
+			ucontrol boost 1 0 0 0 0
+			ucontrol itemTake target sourceItem 9001 0 0
+			ucontrol within targetX targetY 5 withinRange 0
+			sensor unitLastDrop @unit @flag
+			op sub lastDropElapsed @time unitLastDrop
+			op greaterThan shouldReverse lastDropElapsed 1500
+			op land shouldReverse shouldReverse withinRange
+			jump CargoBalancer_ApproachPickupSource equal shouldReverse true
+		CargoBalancer_ApproachPickupTarget:
+			ucontrol move targetX targetY 5 0 0
+			end
+End_CargoBalancer:
+
+
+Start_Idle:
+		jump Idle_Unbind equal idleAt null
+		ucontrol move idleAtX idleAtY 0 0 0
+	Idle_Unbind:
+		set isIdle true
+		sensor unitController @unit @controller
+		jump End_Idle notEqual unitController @this
+		ucontrol unbind 0 0 0 0 0
+End_Idle:
+
+
+end

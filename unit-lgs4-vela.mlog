@@ -1,0 +1,1190 @@
+# Velas are decent units for attacking enemy units and bases.
+# However, they may have trouble finding a spot to land,
+#  so combine them with other air units.
+
+Start_Init:
+		jump End_Init equal init 1
+
+		set gitHub https://github.com/killfrenzy96/mindustry-unit-logic
+		set unitType @vela
+		set bindLimit 8
+		set playerControl true
+		set playerFormation true
+		set playerMixedFormation true
+		set playerRetreat true
+		set safeAttackMode true
+		set seekEnemyBase true
+		set spawnRange 50
+		set turretRange 38
+		set coreRepairTarget 0.95
+		set retreatHealth 0.8
+		set exploreDistance 1000
+
+		op mul unitIndexLimit bindLimit 2
+		op sub unitIndexLimit unitIndexLimit 1
+		jump Start_SelectUnit equal @unit null
+
+	Init_SetupVariables:
+		op add spawnRetreatDistance spawnRange 5
+		op or playerCommand playerControl playerFormation
+		sensor unitType @unit @type
+		sensor unitSize @unit @size
+		sensor unitSpeed @unit @speed
+		sensor unitRange @unit @range
+		sensor unitTeam @unit @team
+		op mul unitDoubleSize unitSize 2
+		op add unitEngageRange unitRange unitSpeed
+		op add unitEngageRange unitEngageRange 6
+		op mul unitApproachRange unitRange 0.95
+		op mul unitSupportRange unitRange 0.75
+		op mul unitHalfRange unitRange 0.5
+		op mul unitEvasiveness unitSpeed 5
+		op mul unitFormationDistanceMin unitSize 200
+		op mul unitFormationDistanceMax unitSize 450
+		sensor unitMaxHealth @unit @maxHealth
+		set init 1
+End_Init:
+
+
+Start_SelectUnit:
+		op add @counter @counter unitIndex
+		ubind unitBind01
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind02
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind03
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind04
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind05
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind06
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind07
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind08
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind09
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind10
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind11
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind12
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind13
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind14
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind15
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind16
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind17
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind18
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind19
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind20
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind21
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind22
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind23
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind24
+		jump SelectUnit_ValidateUnit always 0 0
+
+	SelectUnit_ValidateUnit:
+		sensor unitDead @unit @dead
+		sensor unitController @unit @controller
+		op notEqual unitNotOurs unitController @this
+		op or somethingWrong unitDead unitNotOurs
+		jump SelectUnit_Iterate equal somethingWrong false
+
+	SelectUnit_BindNewUnit:
+		ubind unitType
+		jump SelectUnit_BindNewUnit equal @unit null
+		sensor newUnitController @unit @controller
+		jump SelectUnit_IterateAndRestart equal newUnitController @this
+		jump SelectUnit_BindNewUnit notEqual newUnitController @unit
+		ucontrol stop 0 0 0 0 0
+
+		op add @counter @counter unitIndex
+		set unitBind01 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind02 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind03 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind04 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind05 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind06 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind07 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind08 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind09 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind10 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind11 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind12 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind13 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind14 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind15 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind16 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind17 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind18 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind19 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind20 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind21 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind22 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind23 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind24 @unit
+		jump SelectUnit_Iterate always 0 0
+
+	SelectUnit_IterateAndRestart:
+		op add unitIndex unitIndex 2
+		jump SelectUnit_IterateAndRestartEnd lessThanEq unitIndex unitIndexLimit
+		set unitIndex 0
+		set unitsBinded unitsCounter
+		set unitsCounter 0
+	SelectUnit_IterateAndRestartEnd:
+		jump Start_SelectUnit always 0 0
+
+	SelectUnit_Iterate:
+		op add unitIndex unitIndex 2
+		op add unitsCounter unitsCounter 1
+		jump SelectUnit_IterateEnd lessThanEq unitIndex unitIndexLimit
+		set unitIndex 0
+		set unitsBinded unitsCounter
+		set unitsCounter 0
+	SelectUnit_IterateEnd:
+
+		jump Start_Init equal init 0
+End_SelectUnit:
+
+
+Start_Repair:
+		sensor unitHealth @unit @health
+		op div unitHealthPercent unitHealth unitMaxHealth
+		ulocate building core false @copper coreX coreY coreFound core
+
+		ulocate building repair false @copper repairX repairY repairFound repairBuilding
+		jump Repair_AnchorToCore equal repairFound false
+
+		sensor repairPower repairBuilding @powerNetIn
+		jump Repair_TestBest equal repairPower 0
+		jump Repair_UpdateBest always 0 0
+
+	Repair_TestBest:
+		jump Repair_UpdateBest equal bestRepair null
+
+		sensor bestRepairDead bestRepair @dead
+		jump Repair_RemoveBest equal bestRepairDead true
+		sensor bestRepairPower bestRepair @powerNetIn
+		jump Repair_RemoveBest equal bestRepairPower 0
+
+		jump Repair_UpdateBest always 0 0
+
+	Repair_RemoveBest:
+		set bestRepair null
+		set bestRepairScore 0
+		jump Repair_AnchorToCore always 0 0
+
+	Repair_UpdateBest:
+		jump Repair_UseBest equal repairPower 0
+		op sub repairCoreDistanceX coreX repairX
+		op sub repairCoreDistanceY coreY repairY
+		op len repairCoreDistance repairCoreDistanceX repairCoreDistanceY
+		op sub repairScore exploreDistance repairCoreDistance
+		jump Repair_UseClosest lessThanEq repairScore bestRepairScore
+		set bestRepair repairBuilding
+		set bestRepairDistance repairCoreDistance
+		set bestRepairX repairX
+		set bestRepairY repairY
+		set bestRepairScore repairScore
+		# jump Repair_UseBest always 0 0
+
+	Repair_UseBest:
+		set anchor bestRepair
+		set anchorX bestRepairX
+		set anchorY bestRepairY
+		jump Repair_ApproachTarget always 0 0
+
+	Repair_UseClosest:
+		set anchor repairBuilding
+		set anchorX repairX
+		set anchorY repairY
+
+	Repair_ApproachTarget:
+		sensor anchorRange anchor @range
+		jump End_Repair greaterThan unitHealthPercent retreatHealth
+		ucontrol boost 1 0 0 0 0
+		ucontrol approach anchorX anchorY 3 0 0
+
+		uradar enemy any any distance 0 1 enemyUnit
+		jump Repair_NoEnemyTargets equal enemyUnit null
+		ucontrol targetp enemyUnit 1 0 0 0
+		end
+	Repair_NoEnemyTargets:
+
+		ulocate damaged core true @copper damagedX damagedY damagedFound damagedBuilding
+		jump Repair_NoDamagedBuildings equal damagedBuilding null
+		ucontrol target damagedX damagedY 1 0 0
+		end
+	Repair_NoDamagedBuildings:
+
+		ucontrol target repairX repairY 0 0 0
+		end
+
+	Repair_AnchorToCore:
+		set anchor core
+		set anchorX coreX
+		set anchorY coreY
+		set anchorRange 50
+End_Repair:
+
+
+Start_GetOutOfTheWay:
+		sensor unitBoosting @unit @boosting
+		jump GetOutOfTheWay_Ground equal unitBoosting false
+	GetOutOfTheWay_Flying:
+		uradar ally flying any distance 0 1 allyUnit
+		jump GetOutOfTheWay_UnitTypeEnd always 0 0
+	GetOutOfTheWay_Ground:
+		uradar ally ground any distance 0 1 allyUnit
+	GetOutOfTheWay_UnitTypeEnd:
+
+		sensor unitX @unit @x
+		sensor unitY @unit @y
+		jump End_GetOutOfTheWay equal allyUnit null
+		sensor allySize allyUnit @size
+		sensor allyX allyUnit @x
+		sensor allyY allyUnit @y
+		# sensor unitX @unit @x
+		# sensor unitY @unit @y
+		op sub unitAllyX unitX allyX
+		op sub unitAllyY unitY allyY
+
+		op add moveDistance unitSize allySize
+		op mul stayAwayRange moveDistance 0.8
+		op len unitAllyDistance unitAllyX unitAllyY
+		jump End_GetOutOfTheWay greaterThan unitAllyDistance stayAwayRange
+
+		sensor allyRotation allyUnit @rotation
+		op sub allyAnchorX anchorX allyX
+		op sub allyAnchorY anchorY allyY
+		op angle allyAnchorRotation allyAnchorX allyAnchorY
+		op angleDiff allyAnchorTravelDifference allyRotation allyAnchorRotation
+
+		ucontrol approach allyX allyY moveDistance 0 0
+
+		jump End_GetOutOfTheWay greaterThan allyAnchorTravelDifference 5
+		end
+End_GetOutOfTheWay:
+
+
+jump Start_PlayerControl notEqual unitsInFormation null
+
+
+Start_SpawnRetreat:
+		jump End_EnemyTurretRetreat notEqual unitsAttackingBase null
+
+		ulocate spawn core true @copper dangerX dangerY spawnFound spawnBuilding
+		ucontrol within dangerX dangerY spawnRange withinSpawn 0
+		set dangerRange spawnRange
+		jump End_SpawnRetreat equal withinSpawn false
+		ucontrol boost 1 0 0 0 0
+		ucontrol approach coreX coreY 6 0 0
+		end
+End_SpawnRetreat:
+
+
+Start_EnemyTurretRetreat:
+		ucontrol within anchorX anchorY anchorRange withinAnchor 0
+		jump End_EnemyTurretRetreat equal withinAnchor true
+
+		ulocate building turret true @copper enemyTurretX enemyTurretY enemyTurretFound enemyTurret
+		jump End_EnemyTurretRetreat equal enemyTurretFound false
+
+		set dangerX enemyTurretX
+		set dangerY enemyTurretY
+		set dangerRange turretRange
+
+		ucontrol within enemyTurretX enemyTurretY turretRange withinEnemyTurret 0
+		jump End_EnemyTurretRetreat equal withinEnemyTurret false
+		ucontrol boost 1 0 0 0 0
+		ucontrol approach anchorX anchorY 6 0 0
+		end
+End_EnemyTurretRetreat:
+
+
+Start_ProtectCore:
+		# ulocate building core false @copper coreX coreY coreFound core
+		sensor coreHealth core @health
+		sensor coreMaxHealth core @maxHealth
+		op mul coreTargetHealth coreMaxHealth coreRepairTarget
+		jump End_ProtectCore greaterThanEq coreHealth coreTargetHealth
+		ucontrol within coreX coreY unitEngageRange unitBoost 0
+		op equal unitBoost unitBoost false
+		ucontrol target coreX coreY 1 0 0
+		ucontrol approach coreX coreY unitRange 0 0
+		jump Start_Movement always 0 0
+		end
+End_ProtectCore:
+
+
+Start_EnemyUnits:
+		uradar enemy any any distance 0 1 enemyUnit
+		uradar enemy any any distance 0 0 farEnemyUnit
+
+		jump EnemyUnits_NoFarUnits equal farEnemyUnit null
+		set lastFarEnemyUnit farEnemyUnit
+	EnemyUnits_NoFarUnits:
+
+		jump EnemyUnits_Begin notEqual enemyUnit null
+		jump EnemyUnits_NoLastEnemyUnit equal lastEnemyUnit null
+		sensor lastEnemyDead lastEnemyUnit @dead
+		jump EnemyUnits_UseLastUnit equal lastEnemyDead false
+		set lastEnemyUnit null
+	EnemyUnits_NoLastEnemyUnit:
+	
+		jump End_EnemyUnits equal lastFarEnemyUnit null
+		sensor lastFarEnemyDead lastFarEnemyUnit @dead
+		jump EnemyUnits_UseLastFarUnit equal lastFarEnemyDead false
+		set lastFarEnemyUnit null
+		jump End_EnemyUnits always 0 0
+
+	EnemyUnits_UseLastFarUnit:
+		set enemyUnit lastFarEnemyUnit
+		jump EnemyUnits_Begin always 0 0
+
+	EnemyUnits_UseLastUnit:
+		set enemyUnit lastEnemyUnit
+
+	EnemyUnits_Begin:
+		set lastEnemyUnit enemyUnit
+		# sensor unitX @unit @x
+		# sensor unitY @unit @y
+		sensor enemyX enemyUnit @x
+		sensor enemyY enemyUnit @y
+		sensor enemyVelocityX enemyUnit @velocityX
+		sensor enemyVelocityY enemyUnit @velocityY
+		op add enemyPredictedX enemyX enemyVelocityX
+		op add enemyPredictedY enemyY enemyVelocityY
+		sensor enemyHealth enemyUnit @health
+		set maintainDistance unitApproachRange
+
+	EnemyUnits_HandleDecisions:
+		op rand random 1 0
+		op sub enemyAnchorDistanceX anchorX enemyPredictedX
+		op sub enemyAnchorDistanceY anchorY enemyPredictedY
+		op len enemyAnchorDistance enemyAnchorDistanceX enemyAnchorDistanceY
+		jump End_EnemyUnits greaterThan enemyAnchorDistance exploreDistance
+
+	EnemyUnits_HideBehindBuilding:
+			op add allyBuildingX enemyX unitX
+			op add allyBuildingY enemyY unitY
+			op div allyBuildingX allyBuildingX 2
+			op div allyBuildingY allyBuildingY 2
+			ucontrol getBlock allyBuildingX allyBuildingY allyBuildingType allyBuilding allyBuildingFloor
+
+			jump EnemyUnits_HideBehindBuilding_TestShootBuilding equal allyBuilding null
+			sensor allyBuildingTeam allyBuilding @team
+			jump EnemyUnits_HideBehindBuilding_TestShootBuilding notEqual allyBuildingTeam unitTeam
+			jump EnemyUnits_HideBehindBuilding_UpdateBestBuilding always 0 0
+
+		EnemyUnits_HideBehindBuilding_TestDamagedBuilding:
+			ulocate damaged core true @copper allyBuildingX allyBuildingY allyBuildingFound allyBuilding
+			jump EnemyUnits_HideBehindBuilding_TestBestBuilding equal allyBuilding null
+			jump EnemyUnits_HideBehindBuilding_UpdateBestBuilding always 0 0
+
+		EnemyUnits_HideBehindBuilding_TestShootBuilding:
+			sensor allyBuildingX enemyUnit @shootX
+			sensor allyBuildingY enemyUnit @shootY
+			ucontrol getBlock allyBuildingX allyBuildingY allyBuildingType allyBuilding allyBuildingFloor
+
+			jump EnemyUnits_HideBehindBuilding_TestDamagedBuilding equal allyBuilding null
+			sensor allyBuildingTeam allyBuilding @team
+			jump EnemyUnits_HideBehindBuilding_TestDamagedBuilding notEqual allyBuildingTeam unitTeam
+			jump EnemyUnits_HideBehindBuilding_UpdateBestBuilding always 0 0
+
+		EnemyUnits_HideBehindBuilding_TestBestBuilding:
+			jump EnemyUnits_HideBehindBuilding_End equal bestAllyBuilding null
+
+			sensor bestAllyBuildingDead bestAllyBuilding @dead
+			jump EnemyUnits_HideBehindBuilding_RemoveBestBuilding equal bestAllyBuildingDead true
+			jump EnemyUnits_HideBehindBuilding_UseBestBuilding always 0 0
+
+		EnemyUnits_HideBehindBuilding_RemoveBestBuilding:
+			set bestAllyBuilding null
+			jump EnemyUnits_HideBehindBuilding_End always 0 0
+
+		EnemyUnits_HideBehindBuilding_UpdateBestBuilding:
+			op sub allyBuildingDistanceX allyBuildingX enemyPredictedX
+			op sub allyBuildingDistanceY allyBuildingY enemyPredictedY
+			op len allyBuildingDistance allyBuildingDistanceX allyBuildingDistanceY
+			op sub allyBuildingScore allyBuildingDistance unitHalfRange
+			op abs allyBuildingScore allyBuildingScore 0
+			op sub bestAllyBuildingDistanceX bestAllyBuildingX enemyPredictedX
+			op sub bestAllyBuildingDistanceY bestAllyBuildingY enemyPredictedY
+			op len bestAllyBuildingDistance bestAllyBuildingDistanceX bestAllyBuildingDistanceY
+			op sub bestAllyBuildingScore bestAllyBuildingDistance unitHalfRange
+			op abs bestAllyBuildingScore bestAllyBuildingScore 0
+			jump EnemyUnits_HideBehindBuilding_UseBestBuilding greaterThan allyBuildingScore bestAllyBuildingScore
+
+			set bestAllyBuilding allyBuilding
+			set bestAllyBuildingX allyBuildingX
+			set bestAllyBuildingY allyBuildingY
+			jump EnemyUnits_HideBehindBuilding_Approach always 0 0
+
+		EnemyUnits_HideBehindBuilding_UseBestBuilding:
+			set allyBuilding bestAllyBuilding
+			set allyBuildingX bestAllyBuildingX
+			set allyBuildingY bestAllyBuildingY
+		EnemyUnits_HideBehindBuilding_Approach:
+			op sub allyBuildingDistanceX allyBuildingX enemyPredictedX
+			op sub allyBuildingDistanceY allyBuildingY enemyPredictedY
+			op len allyBuildingDistance allyBuildingDistanceX allyBuildingDistanceY
+			op add allyBuildingPaddedDistance allyBuildingDistance unitDoubleSize
+			sensor allyBuildingSize allyBuilding @size
+			op add allyBuildingPaddedDistance allyBuildingPaddedDistance allyBuildingSize
+			jump EnemyUnits_HideBehindBuilding_End greaterThan allyBuildingPaddedDistance unitEngageRange
+		EnemyUnits_HideBehindBuilding_StayBehind:
+			jump EnemyUnits_HideBehindBuilding_ForceEngage equal safeAttackMode false
+			op max maintainDistance unitApproachRange allyBuildingPaddedDistance
+		EnemyUnits_HideBehindBuilding_ForceEngage:
+			op div evasiveMultiplier unitApproachRange maintainDistance
+			set pivotTowardsX allyBuildingX
+			set pivotTowardsY allyBuildingY
+			op sub random random 0.5
+			op mul random random evasiveMultiplier
+			jump EnemyUnits_CalculatePositioning always 0 0
+	EnemyUnits_HideBehindBuilding_End:
+
+	EnemyUnits_HideBehindCore:
+		op sub enemyCoreDistanceX enemyPredictedX coreX
+		op sub enemyCoreDistanceY enemyPredictedY coreY
+		op len enemyCoreDistance enemyCoreDistanceX enemyCoreDistanceY
+		jump EnemyUnits_DecideIfShouldDisengage greaterThan enemyCoreDistance unitEngageRange
+	EnemyUnits_HideBehindCore_StayBehind:
+		jump EnemyUnits_HideBehindCore_ForceEngage equal safeAttackMode false
+		op max maintainDistance unitApproachRange enemyCoreDistance
+	EnemyUnits_HideBehindCore_ForceEngage:
+		op div evasiveMultiplier unitApproachRange maintainDistance
+		set pivotTowardsX coreX
+		set pivotTowardsY coreY
+		op sub random random 0.5
+		op mul random random evasiveMultiplier
+		jump EnemyUnits_CalculatePositioning always 0 0
+
+	EnemyUnits_DecideIfShouldDisengage:
+		jump EnemyUnits_DecideIfShouldDisengage_Unsafe equal safeAttackMode false
+		jump EnemyUnits_DecideIfShouldDisengage_DoNotForceEngage lessThan unitsBinded bindLimit
+		jump EnemyUnits_HideBehindCore_ForceEngage lessThan enemyCoreDistance 60
+	EnemyUnits_DecideIfShouldDisengage_DoNotForceEngage:
+		ucontrol within enemyPredictedX enemyPredictedY unitEngageRange withinRange 0
+		jump EnemyUnits_HideBehindCore_StayBehind equal withinRange true
+		jump End_EnemyUnits always 0 0
+
+	EnemyUnits_DecideIfShouldDisengage_Unsafe:
+		jump EnemyUnits_HideBehindCore_ForceEngage equal unitsAttackingBase null
+		ucontrol within enemyPredictedX enemyPredictedY unitEngageRange withinRange 0
+		jump EnemyUnits_HideBehindCore_ForceEngage equal withinRange true
+		op sub enemyDangerDistanceX enemyPredictedX dangerX
+		op sub enemyDangerDistanceY enemyPredictedY dangerY
+		op len enemyDangerDistance enemyDangerDistanceX enemyDangerDistanceY
+		jump EnemyUnits_HideBehindCore_ForceEngage greaterThanEq enemyDangerDistance dangerRange
+		jump End_EnemyUnits always 0 0
+
+	EnemyUnits_FreelyEngage:
+		set pivotTowardsX unitX
+		set pivotTowardsY unitY
+		op greaterThan random random 0.5
+		op sub random random 0.5
+
+	EnemyUnits_CalculatePositioning:
+		op sub distanceX pivotTowardsX enemyX
+		op sub distanceY pivotTowardsY enemyY
+		op len distance distanceX distanceY
+		op div normalX distanceX distance
+		op div normalY distanceY distance
+		op mul theta random unitEvasiveness
+		op sin sinTheta theta 0
+		op cos cosTheta theta 0
+		op mul x1 normalX cosTheta
+		op mul y1 normalY sinTheta
+		op sub adjustedX x1 y1
+		op mul adjustedX adjustedX maintainDistance
+		op mul x2 normalX sinTheta
+		op mul y2 normalY cosTheta
+		op add adjustedY x2 y2
+		op mul adjustedY adjustedY maintainDistance
+		op add travelX enemyPredictedX adjustedX
+		op add travelY enemyPredictedY adjustedY
+		ucontrol within enemyX enemyY unitEngageRange unitBoost 0
+		op equal unitBoost unitBoost false
+
+		jump EnemyUnits_DoNotAvoidDanger notEqual unitsAttackingBase null
+		op sub travelDangerDistanceX travelX dangerX
+		op sub travelDangerDistanceY travelY dangerY
+		op len travelDangerDistance travelDangerDistanceX travelDangerDistanceY
+		jump End_EnemyUnits lessThan travelDangerDistance dangerRange
+	EnemyUnits_DoNotAvoidDanger:
+
+		ucontrol move travelX travelY maintainDistance 0 0
+		ucontrol targetp enemyUnit 1 0 0 0
+		jump Start_Movement always 0 0
+		end
+End_EnemyUnits:
+
+
+Start_PlayerControl:
+		jump End_PlayerControl equal playerCommand false
+
+		uradar player ally any distance 0 0 playerUnit
+
+		sensor lastActivePlayerControlled lastActivePlayerUnit @controlled
+		jump PlayerControl_ValidateLastActivePlayer_End equal lastActivePlayerControlled @ctrlPlayer
+		set lastActivePlayerUnit null
+	PlayerControl_ValidateLastActivePlayer_End:
+
+		jump PlayerControl_UseActivePlayer_End notEqual playerUnit null
+		set playerUnit lastActivePlayerUnit
+	PlayerControl_UseActivePlayer_End:
+
+		jump PlayerControl_Finish equal playerUnit null
+
+		sensor playerType playerUnit @type
+		sensor playerShooting playerUnit @shooting
+		jump PlayerControl_NoFormation equal playerFormation false
+
+		jump PlayerControl_NoMixedFormation equal playerMixedFormation false
+		jump PlayerControl_NoFormation equal playerType @alpha
+		jump PlayerControl_NoFormation equal playerType @beta
+		jump PlayerControl_NoFormation equal playerType @gamma
+		jump PlayerControl_Formation always 0 0
+	PlayerControl_NoMixedFormation:
+
+		op equal playerIsSameUnit playerType unitType
+		jump PlayerControl_Formation equal playerIsSameUnit true
+
+	PlayerControl_NoFormation:
+		jump PlayerControl_Finish equal playerControl false
+
+		jump PlayerControl_ValidatePlayerUnit_End equal playerType @alpha
+		jump PlayerControl_ValidatePlayerUnit_End equal playerType @beta
+		jump PlayerControl_ValidatePlayerUnit_End equal playerType @gamma
+		jump PlayerControl_Finish always 0 0
+	PlayerControl_ValidatePlayerUnit_End:
+
+		jump PlayerControl_Shooting equal playerShooting true
+		jump PlayerControl_Finish always 0 0
+
+	PlayerControl_Formation:
+		set unitsInFormation @time
+
+		set lastActivePlayerUnit playerUnit
+		# sensor unitX @unit @x
+		# sensor unitY @unit @y
+		sensor playerX playerUnit @x
+		sensor playerY playerUnit @y
+		sensor playerVelocityX playerUnit @velocityX
+		sensor playerVelocityY playerUnit @velocityY
+		op add playerX playerX playerVelocityX
+		op add playerY playerY playerVelocityY
+		sensor targetX playerUnit @shootX
+		sensor targetY playerUnit @shootY
+
+		op sub playerDistanceX playerX targetX
+		op sub playerDistanceY playerY targetY
+		op len playerDistance playerDistanceX playerDistanceY
+		op sub unitDistanceX unitX targetX
+		op sub unitDistanceY unitY targetY
+		op len unitDistance unitDistanceX unitDistanceY
+
+		op angle playerAngle playerDistanceX playerDistanceY
+		op angle unitAngle unitDistanceX unitDistanceY
+		op sub angleDifference playerAngle unitAngle
+		jump PlayerControl_AngleReverse_Opposite greaterThan angleDifference -180
+		# op add playerAngle playerAngle 360
+		op add angleDifference angleDifference 360
+		jump PlayerControl_AngleReverse_End always 0 0
+	PlayerControl_AngleReverse_Opposite:
+		jump PlayerControl_AngleReverse_End lessThan angleDifference 180
+		# op add unitAngle unitAngle 360
+		op add angleDifference angleDifference -360
+	PlayerControl_AngleReverse_End:
+
+		# op lessThan unitFormation playerAngle unitAngle
+		# op sub unitFormation unitFormation 0.5
+		# op mul unitFormation unitFormation unitFormationDistance
+		# op div theta unitFormation playerDistance
+
+		op div minTheta unitFormationDistanceMin playerDistance
+		op div maxTheta unitFormationDistanceMax playerDistance
+		op mul theta angleDifference -1
+		jump PlayerControl_FormationSide_Right greaterThan theta 0
+	PlayerControl_FormationSide_Left:
+		op mul minTheta minTheta -1
+		op mul maxTheta maxTheta -1
+		op min theta theta minTheta
+		op max theta theta maxTheta
+		jump PlayerControl_FormationSide_End always 0 0
+	PlayerControl_FormationSide_Right:
+		op max theta theta minTheta
+		op min theta theta maxTheta
+	PlayerControl_FormationSide_End:
+
+		set maintainDistance playerDistance
+		sensor playerBoosting playerUnit @boosting
+		jump PlayerControl_AttemptBoostLanding_End equal playerBoosting true
+		sensor unitBoosting @unit @boosting
+		jump PlayerControl_AttemptBoostLanding_End equal unitBoosting false
+		op mul landingSeparation unitSize 3
+		op add maintainDistance playerDistance landingSeparation
+	PlayerControl_AttemptBoostLanding_End:
+
+		op div normalX playerDistanceX playerDistance
+		op div normalY playerDistanceY playerDistance
+		op sin sinTheta theta 0
+		op cos cosTheta theta 0
+		op mul x1 normalX cosTheta
+		op mul y1 normalY sinTheta
+		op sub adjustedX x1 y1
+		op mul adjustedX adjustedX maintainDistance
+		op mul x2 normalX sinTheta
+		op mul y2 normalY cosTheta
+		op add adjustedY x2 y2
+		op mul adjustedY adjustedY maintainDistance
+		op add travelX targetX adjustedX
+		op add travelY targetY adjustedY
+
+		uradar enemy any any distance 0 1 enemyUnit
+		jump PlayerControl_Formation_MirrorPlayerShooting equal enemyUnit null
+		ucontrol targetp enemyUnit 1 0 0 0
+		jump PlayerControl_Formation_HandleMovement always 0 0
+
+	PlayerControl_Formation_MirrorPlayerShooting:
+		set shootX targetX
+		set shootY targetY
+		op mul unitShootRange unitRange 0.85
+		jump PlayerControl_Formation_Calculations_End equal playerShooting false
+		jump PlayerControl_Formation_Calculations_End lessThan unitDistance unitShootRange
+		op mul unitDistanceX unitDistanceX -1
+		op mul unitDistanceY unitDistanceY -1
+		op div normalX unitDistanceX unitDistance
+		op div normalY unitDistanceY unitDistance
+		op mul adjustedX normalX unitShootRange
+		op mul adjustedY normalY unitShootRange
+		op add shootX unitX adjustedX
+		op add shootY unitY adjustedY
+	PlayerControl_Formation_Calculations_End:
+		ucontrol target shootX shootY playerShooting 0 0
+
+	PlayerControl_Formation_HandleMovement:
+		ucontrol within travelX travelY unitSize withinFormation 0
+		jump PlayerControl_Formation_AlreadyInPosition equal withinFormation true
+		ucontrol move travelX travelY 0 0 0
+		jump PlayerControl_Formation_HandleBoost always 0 0
+	PlayerControl_Formation_AlreadyInPosition:
+		ucontrol idle 0 0 0 0 0
+
+	PlayerControl_Formation_HandleBoost:
+		ucontrol within travelX travelY unitApproachRange unitBoost 0
+		op equal unitBoost unitBoost false
+		op or unitBoost unitBoost playerBoosting
+		jump Start_Movement always 0 0
+		end
+
+	PlayerControl_Shooting:
+		set lastActivePlayerUnit playerUnit
+		# sensor unitX @unit @x
+		# sensor unitY @unit @y
+		sensor targetX playerUnit @shootX
+		sensor targetY playerUnit @shootY
+		ucontrol getBlock targetX targetY targetType targetBuilding targetFloor
+		jump PlayerControl_ApproachTarget equal targetBuilding null
+		# sensor unitTeam @unit @team
+		sensor targetTeam targetBuilding @team
+		jump PlayerControl_ApproachTarget equal unitTeam targetTeam
+		ucontrol within targetX targetY unitEngageRange unitBoost 0
+		op equal unitBoost unitBoost false
+		ucontrol target targetX targetY 1 0 0
+		ucontrol approach targetX targetY unitApproachRange 0 0
+		set attackX targetX
+		set attackY targetY
+		jump Start_Movement always 0 0
+		end
+
+	PlayerControl_ApproachTarget:
+		ucontrol within attackX attackY unitRange withinAttack 0
+		jump PlayerControl_MoveToTarget equal withinAttack false
+		set attackX null
+
+	PlayerControl_MoveToTarget:
+		ucontrol within targetX targetY unitEngageRange unitBoost 0
+		op equal unitBoost unitBoost false
+		ucontrol target targetX targetY 0 0 0
+		ucontrol approach targetX targetY 6 0 0
+		jump Start_Movement always 0 0
+		end
+
+	PlayerControl_CheckIfTagetingBuilding:
+		jump PlayerControl_Finish equal attackX null
+
+		ucontrol within attackX attackY unitRange withinAttack 0
+		jump PlayerControl_AttackBuilding equal withinAttack false
+
+		ucontrol getBlock attackX attackY attackType attackBuilding attackFloor
+		jump PlayerControl_CheckIfBuildingExists notEqual attackFloor null
+
+	PlayerControl_CheckIfBuildingExists:
+		jump PlayerControl_AttackBuilding notEqual attackBuilding null
+		set attackX null
+		jump PlayerControl_Finish always 0 0
+		end
+
+	PlayerControl_AttackBuilding:
+		ucontrol within attackX attackY unitEngageRange unitBoost 0
+		op equal unitBoost unitBoost false
+		ucontrol target attackX attackY 1 0 0
+		ucontrol approach attackX attackY unitApproachRange 0 0
+		jump Start_Movement always 0 0
+		end
+
+	PlayerControl_Finish:
+		op sub unitsFormationTimeElapsed @time unitsInFormation
+		jump End_PlayerControl lessThan unitsFormationTimeElapsed 2000
+		set unitsInFormation null
+End_PlayerControl:
+
+
+Start_SeekEnemyBase:
+		jump End_SeekEnemyBase equal seekEnemyBase false
+		jump SeekEnemyBase_Finish lessThan unitsBinded bindLimit
+		ulocate building core true @copper enemyCoreX enemyCoreY enemyCoreFound enemyCore
+		jump SeekEnemyBase_Finish equal enemyCoreFound false
+
+		# sensor unitX @unit @x
+		# sensor unitY @unit @y
+		op sub unitDistanceX unitX anchorX
+		op sub unitDistanceY unitY anchorY
+		op len unitDistance unitDistanceX unitDistanceY
+
+		op sub distanceX enemyCoreX anchorX
+		op sub distanceY enemyCoreY anchorY
+		op len targetDistance distanceX distanceY
+		set targetX enemyCoreX
+		set targetY enemyCoreY
+		# set targetBuilding enemyCore
+
+		ulocate building storage true @copper enemyBuildingX enemyBuildingY enemyBuildingFound enemyBuilding
+		jump SeekEnemyBase_StorageEnd equal enemyBuildingFound false
+		op sub distanceX enemyBuildingX anchorX
+		op sub distanceY enemyBuildingY anchorY
+		op len distance distanceX distanceY
+		jump SeekEnemyBase_StorageEnd greaterThanEq distance targetDistance
+		set targetDistance distance
+		set targetX enemyBuildingX
+		set targetY enemyBuildingY
+		# set targetBuilding enemyBuilding
+	SeekEnemyBase_StorageEnd:
+
+		ulocate building generator true @copper enemyBuildingX enemyBuildingY enemyBuildingFound enemyBuilding
+		jump SeekEnemyBase_GeneratorEnd equal enemyBuildingFound false
+		op sub distanceX enemyBuildingX anchorX
+		op sub distanceY enemyBuildingY anchorY
+		op len distance distanceX distanceY
+		jump SeekEnemyBase_GeneratorEnd greaterThanEq distance targetDistance
+		set targetDistance distance
+		set targetX enemyBuildingX
+		set targetY enemyBuildingY
+		# set targetBuilding enemyBuilding
+	SeekEnemyBase_GeneratorEnd:
+
+		ulocate building turret true @copper enemyBuildingX enemyBuildingY enemyBuildingFound enemyBuilding
+		jump SeekEnemyBase_TurretEnd equal enemyBuildingFound false
+		op sub distanceX enemyBuildingX anchorX
+		op sub distanceY enemyBuildingY anchorY
+		op len distance distanceX distanceY
+		jump SeekEnemyBase_TurretEnd greaterThanEq distance targetDistance
+		set targetDistance distance
+		set targetX enemyBuildingX
+		set targetY enemyBuildingY
+		# set targetBuilding enemyBuilding
+	SeekEnemyBase_TurretEnd:
+
+		ulocate building factory true @copper enemyBuildingX enemyBuildingY enemyBuildingFound enemyBuilding
+		jump SeekEnemyBase_FactoryEnd equal enemyBuildingFound false
+		op sub distanceX enemyBuildingX anchorX
+		op sub distanceY enemyBuildingY anchorY
+		op len distance distanceX distanceY
+		jump SeekEnemyBase_FactoryEnd greaterThanEq distance targetDistance
+		set targetDistance distance
+		set targetX enemyBuildingX
+		set targetY enemyBuildingY
+		# set targetBuilding enemyBuilding
+	SeekEnemyBase_FactoryEnd:
+
+		ulocate building repair true @copper enemyBuildingX enemyBuildingY enemyBuildingFound enemyBuilding
+		jump SeekEnemyBase_RepairEnd equal enemyBuildingFound false
+		op sub distanceX enemyBuildingX anchorX
+		op sub distanceY enemyBuildingY anchorY
+		op len distance distanceX distanceY
+		jump SeekEnemyBase_RepairEnd greaterThanEq distance targetDistance
+		set targetDistance distance
+		set targetX enemyBuildingX
+		set targetY enemyBuildingY
+		# set targetBuilding enemyBuilding
+	SeekEnemyBase_RepairEnd:
+
+		ulocate building battery true @copper enemyBuildingX enemyBuildingY enemyBuildingFound enemyBuilding
+		jump SeekEnemyBase_BatteryEnd equal enemyBuildingFound false
+		op sub distanceX enemyBuildingX anchorX
+		op sub distanceY enemyBuildingY anchorY
+		op len distance distanceX distanceY
+		jump SeekEnemyBase_BatteryEnd greaterThanEq distance targetDistance
+		set targetDistance distance
+		set targetX enemyBuildingX
+		set targetY enemyBuildingY
+		# set targetBuilding enemyBuilding
+	SeekEnemyBase_BatteryEnd:
+
+		ulocate building reactor true @copper enemyBuildingX enemyBuildingY enemyBuildingFound enemyBuilding
+		jump SeekEnemyBase_ReactorEnd equal enemyBuildingFound false
+		op sub distanceX enemyBuildingX anchorX
+		op sub distanceY enemyBuildingY anchorY
+		op len distance distanceX distanceY
+		jump SeekEnemyBase_ReactorEnd greaterThanEq distance targetDistance
+		set targetDistance distance
+		set targetX enemyBuildingX
+		set targetY enemyBuildingY
+		# set targetBuilding enemyBuilding
+	SeekEnemyBase_ReactorEnd:
+
+		op sub targetBuildingDistanceX targetX anchorX
+		op sub targetBuildingDistanceY targetY anchorY
+		op len targetBuildingDistance targetBuildingDistanceX targetBuildingDistanceY
+		jump SeekEnemyBase_Finish greaterThan targetBuildingDistance exploreDistance
+
+	SeekEnemyBase_Begin:
+		set unitsAttackingBase @time
+		op rand random 1 0
+		op sub random random 0.5
+		op sub distanceX anchorX targetX
+		op sub distanceY anchorY targetY
+		op len distance distanceX distanceY
+		op div normalX distanceX distance
+		op div normalY distanceY distance
+		op mul theta random unitEvasiveness
+		op sin sinTheta theta 0
+		op cos cosTheta theta 0
+		op mul x1 normalX cosTheta
+		op mul y1 normalY sinTheta
+		op sub adjustedX x1 y1
+		op mul adjustedX adjustedX unitApproachRange
+		op mul x2 normalX sinTheta
+		op mul y2 normalY cosTheta
+		op add adjustedY x2 y2
+		op mul adjustedY adjustedY unitApproachRange
+		op add travelX targetX adjustedX
+		op add travelY targetY adjustedY
+
+		ucontrol move travelX travelY unitApproachRange 0 0
+		ucontrol target targetX targetY 1 0 0
+
+		ucontrol within targetX targetY unitEngageRange unitBoost 0
+		op equal unitBoost unitBoost false
+		jump Start_Movement always 0 0
+		end
+
+	SeekEnemyBase_Finish:
+		op sub unitsAttackingBaseTimeElapsed @time unitsAttackingBase
+		jump End_SeekEnemyBase lessThan unitsAttackingBaseTimeElapsed 2000
+		set unitsAttackingBase null
+End_SeekEnemyBase:
+
+
+Start_FollowAlly:
+		uradar ally attacker any distance 0 0 allyUnit
+
+		sensor allyControlled allyUnit @controlled
+		jump FollowAlly_TestBestAlly notEqual allyControlled @ctrlProcessor
+
+		sensor allyController allyUnit @controller
+		jump FollowAlly_TestBestAlly equal allyController @this
+
+		read enemyUnit allyController "lastEnemyUnit"
+		jump FollowAlly_TestBestAlly equal enemyUnit null
+		sensor enemyUnitDead enemyUnit @dead
+		jump FollowAlly_TestBestAlly equal enemyUnitDead true
+		jump FollowAlly_UpdateBestAlly always 0 0
+
+	FollowAlly_TestBestAlly:
+		jump End_FollowAlly equal bestAllyUnit null
+
+		sensor bestAllyDead bestAllyUnit @dead
+		jump FollowAlly_RemoveBestAlly equal bestAllyDead true
+
+		sensor bestAllyControlled bestAllyUnit @controlled
+		jump FollowAlly_RemoveBestAlly notEqual bestAllyControlled @ctrlProcessor
+
+		sensor bestAllyController bestAllyUnit @controller
+		jump FollowAlly_RemoveBestAlly equal bestAllyController @this
+	
+		read enemyUnit bestAllyController "lastEnemyUnit"
+		jump End_FollowAlly equal enemyUnit null
+		sensor enemyUnitDead enemyUnit @dead
+		jump End_FollowAlly equal enemyUnitDead true
+		jump FollowAlly_ApproachTarget always 0 0
+
+	FollowAlly_RemoveBestAlly:
+		set bestAllyUnit null
+		set bestAllyScore 0
+		jump End_FollowAlly always 0 0
+
+	FollowAlly_UpdateBestAlly:
+		sensor allyRange allyUnit @range
+		read allySafeAttackMode bestAllyController "safeAttackMode"
+		read allySeekEnemyBase bestAllyController "seekEnemyBase"
+		op mul allySafeAttackMode allySafeAttackMode -1
+		op add allySafeAttackMode allySafeAttackMode 2
+		op add allySeekEnemyBase allySeekEnemyBase 2
+		op mul allyScore allyRange allySafeAttackMode
+		op mul allyScore allyScore allySeekEnemyBase
+		jump FollowAlly_ApproachTarget lessThan allyScore bestAllyScore
+		set bestAllyUnit allyUnit
+		set bestAllyScore allyScore
+		set bestAllyController allyController
+
+	FollowAlly_UseBestAlly:
+		set allyController bestAllyController
+	FollowAlly_ApproachTarget:
+		set lastFarEnemyUnit enemyUnit
+		read bestAllyBuilding allyController "bestAllyBuilding"
+		# jump Start_Idle always 0 0
+		# end
+End_FollowAlly:
+
+
+Start_FollowTurret:
+		ulocate building turret false @copper turretX turretY turretFound turret
+
+		radar enemy any any distance turret 1 enemyUnit
+		jump FollowTurret_TestCoreTurret equal enemyUnit null
+		jump FollowTurret_UpdateCoreTurret always 0 0
+
+	FollowTurret_TestCoreTurret:
+		jump FollowTurret_TestSpawnTurret equal bestCoreTurret null
+
+		sensor bestCoreTurretDead bestCoreTurret @dead
+		jump FollowTurret_RemoveCoreTurret equal bestCoreTurretDead true
+
+		radar enemy any any distance bestCoreTurret 1 enemyUnit
+		jump FollowTurret_TestSpawnTurret equal enemyUnit null
+		jump FollowTurret_UpdateCoreTurret always 0 0
+
+	FollowTurret_RemoveCoreTurret:
+		set bestCoreTurret null
+		set bestCoreTurretScore 0
+		# jump End_FollowTurret always 0 0
+
+	FollowTurret_TestSpawnTurret:
+		jump FollowTurret_UpdateCoreTurret equal bestSpawnTurret null
+
+		sensor bestSpawnTurretDead bestSpawnTurret @dead
+		jump FollowTurret_RemoveSpawnTurret equal bestSpawnTurretDead true
+
+		radar enemy any any distance bestSpawnTurret 1 enemyUnit
+		# jump End_FollowTurret equal enemyUnit null
+		jump FollowTurret_UpdateCoreTurret always 0 0
+
+	FollowTurret_RemoveSpawnTurret:
+		set bestSpawnTurret null
+		set bestSpawnTurretScore 0
+		jump End_FollowTurret always 0 0
+
+	FollowTurret_UpdateCoreTurret:
+		jump FollowTurret_TestEnemyUnit equal turret null
+		sensor turretRange turret @range
+		op sub turretCoreDistanceX coreX turretX
+		op sub turretCoreDistanceY coreY turretY
+		op len turretCoreDistance turretCoreDistanceX turretCoreDistanceY
+		op sub coreTurretScore turretRange turretCoreDistance
+		op add coreTurretScore coreTurretScore exploreDistance
+		jump FollowTurret_UpdateSpawnTurret lessThan coreTurretScore bestCoreTurretScore
+		set bestCoreTurret turret
+		set bestCoreTurretScore coreTurretScore
+		# jump FollowTurret_ApproachTarget always 0 0
+
+	FollowTurret_UpdateSpawnTurret:
+		# sensor turretRange turret @range
+		op sub turretDangerDistanceX dangerX turretX
+		op sub turretDangerDistanceY dangerY turretY
+		op len turretDangerDistance turretDangerDistanceX turretDangerDistanceY
+		op sub spawnTurretScore turretRange turretDangerDistance
+		op add spawnTurretScore spawnTurretScore exploreDistance
+		jump FollowTurret_TestEnemyUnit lessThan spawnTurretScore bestSpawnTurretScore
+		set bestSpawnTurret turret
+		set bestSpawnTurretScore spawnTurretScore
+		# jump FollowTurret_ApproachTarget always 0 0
+
+	FollowTurret_TestEnemyUnit:
+		jump End_FollowTurret equal enemyUnit null
+
+	FollowTurret_ApproachTarget:
+		set lastFarEnemyUnit enemyUnit
+		# jump Start_Idle always 0 0
+		# end
+End_FollowTurret:
+
+
+Start_RepairBuildings:
+		ulocate damaged core true @copper approachX approachY damagedFound damagedBuilding
+		jump End_RepairBuildings equal damagedFound false
+		op sub distanceX anchorX approachX
+		op sub distanceY anchorY approachY
+		op len distance distanceX distanceY
+		jump End_RepairBuildings greaterThan distance exploreDistance
+
+	RepairBuildings_Begin:
+		op rand random 1 0
+		set pivotTowardsX coreX
+		set pivotTowardsY coreY
+		jump RepairBuildings_MaximizeEvasion equal turretFound false
+		op sub approachAnchorDistanceX approachX coreX
+		op sub approachAnchorDistanceY approachY coreY
+		op len approachAnchorDistance approachAnchorDistanceX approachAnchorDistanceY
+		op sub turretAnchorDistanceX turretX coreX
+		op sub turretAnchorDistanceY turretY coreY
+		op len turretAnchorDistance turretAnchorDistanceX turretAnchorDistanceY
+		jump RepairBuildings_MaximizeEvasion lessThan approachAnchorDistance turretAnchorDistance
+		set pivotTowardsX turretX
+		set pivotTowardsY turretY
+		jump RepairBuildings_HideBehindTurrets equal safeAttackMode true
+
+	RepairBuildings_ApproachNormally:
+		set maintainDistance unitSupportRange
+		op sub random random 0.5
+		jump RepairBuildings_CalculatePositioning always 0 0
+
+	RepairBuildings_HideBehindTurrets:
+		op sub approachTurretDistanceX turretX approachX
+		op sub approachTurretDistanceY turretY approachY
+		op len approachTurretDistance approachTurretDistanceX approachTurretDistanceY
+		# jump End_RepairBuildings greaterThan approachTurretDistance unitEngageRange
+		# op max maintainDistance unitRange approachTurretDistance
+		set maintainDistance unitApproachRange
+		# op div evasiveMultiplier unitApproachRange maintainDistance
+		op sub random random 0.5
+		op mul random random evasiveMultiplier
+		jump RepairBuildings_CalculatePositioning always 0 0
+
+	RepairBuildings_MaximizeEvasion:
+		op greaterThan random random 0.5
+		op sub random random 0.5
+
+	RepairBuildings_CalculatePositioning:
+		# sensor unitX @unit @x
+		# sensor unitY @unit @y
+		op sub distanceX pivotTowardsX approachX
+		op sub distanceY pivotTowardsY approachY
+		op len distance distanceX distanceY
+		op div normalX distanceX distance
+		op div normalY distanceY distance
+		op mul theta random unitEvasiveness
+		op sin sinTheta theta 0
+		op cos cosTheta theta 0
+		op mul x1 normalX cosTheta
+		op mul y1 normalY sinTheta
+		op sub adjustedX x1 y1
+		op mul adjustedX adjustedX maintainDistance
+		op mul x2 normalX sinTheta
+		op mul y2 normalY cosTheta
+		op add adjustedY x2 y2
+		op mul adjustedY adjustedY maintainDistance
+		op add travelX approachX adjustedX
+		op add travelY approachY adjustedY
+
+		jump RepairBuildings_DoNotAvoidDanger notEqual unitsAttackingBase null
+		op sub travelDangerDistanceX travelX dangerX
+		op sub travelDangerDistanceY travelY dangerY
+		op len travelDangerDistance travelDangerDistanceX travelDangerDistanceY
+		jump End_RepairBuildings lessThan travelDangerDistance dangerRange
+	RepairBuildings_DoNotAvoidDanger:
+
+		ucontrol move travelX travelY maintainDistance 0 0
+		ucontrol within approachX approachY unitEngageRange unitBoost 0
+		op equal unitBoost unitBoost false
+		ucontrol target approachX approachY 1 0 0
+		jump Start_Movement always 0 0
+		end
+End_RepairBuildings:
+
+
+Start_PlayerRetreat:
+		jump End_PlayerRetreat equal playerRetreat false
+		uradar player ally any distance 0 1 playerUnit
+		jump End_PlayerRetreat equal playerUnit null
+		ucontrol targetp playerUnit 0 0 0 0
+		sensor playerX playerUnit @x
+		sensor playerY playerUnit @y
+		op sub maintainSeparation unitRange 5
+		ucontrol boost 1 0 0 0 0
+		ucontrol within playerX playerY maintainSeparation withinPlayer 0
+		jump PlayerRetreat_MaintainSeperation equal withinPlayer false
+		op sub maintainDistance unitRange 1
+		ucontrol approach playerX playerY maintainDistance 0 0
+		end
+	PlayerRetreat_MaintainSeperation:
+		ucontrol stop 0 0 0 0 0
+		end
+End_PlayerRetreat:
+
+
+Start_Idle:
+		ucontrol within anchorX anchorY anchorRange withinAnchor 0
+		ucontrol boost 1 0 0 0 0
+		ucontrol targetp anchor 0 0 0 0
+		jump Idle_ApproachAnchor equal withinAnchor false
+		ucontrol idle 0 0 0 0 0
+		end
+	Idle_ApproachAnchor:
+		ucontrol approach anchorX anchorY 6 0 0
+		end
+End_Idle:
+
+
+Start_Movement:
+		ucontrol getBlock unitX unitY blockType blockBuilding blockFloor
+		jump Movement_EnableBoost equal blockFloor @deep-water
+		jump Movement_EnableBoost equal blockFloor @pooled-cryofluid
+		jump Movement_EnableBoost equal blockFloor @molten-slag
+		jump Movement_EnableBoost equal blockFloor @tar
+		ucontrol boost unitBoost 0 0 0 0
+		end
+	Movement_EnableBoost:
+		ucontrol boost 1 0 0 0 0
+		end
+End_Movement:

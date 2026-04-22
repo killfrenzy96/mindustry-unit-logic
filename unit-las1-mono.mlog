@@ -1,0 +1,335 @@
+# Mines ore, including scrap and sand. Avoids dangerous mining locations.
+
+Start_Init:
+		jump End_Init equal init 1
+
+		set gitHub https://github.com/killfrenzy96/mindustry-unit-logic
+		set unitType @mono
+		set bindLimit 8
+		set oreFillTarget 0.9
+		set spawnRange 50
+		set turretRange 38
+		set exploreDistance 1000
+
+		op mul unitIndexLimit bindLimit 2
+		op sub unitIndexLimit unitIndexLimit 1
+		jump Start_SelectUnit equal @unit null
+
+	Init_SetupVariables:
+		ulocate ore core true @scrap scrapX scrapY scrapFound scrapBuilding
+		ulocate ore core true @sand sandX sandY sandFound building
+		sensor unitType @unit @type
+		sensor unitSize @unit @size
+		sensor unitSpeed @unit @speed
+		sensor unitRange @unit @range
+		sensor unitTeam @unit @team
+		sensor unitItemCapacity @unit @itemCapacity
+		set oreBitCopper 2
+		set oreBitLead 4
+		set oreBitTitanium 8
+		set oreBitCoal 16
+		set oreBitScrap 32
+		set oreBitSand 64
+		set oreBitBeryllium 128
+		set init 1
+End_Init:
+
+
+Start_SelectUnit:
+		op add @counter @counter unitIndex
+		ubind unitBind01
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind02
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind03
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind04
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind05
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind06
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind07
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind08
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind09
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind10
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind11
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind12
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind13
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind14
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind15
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind16
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind17
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind18
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind19
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind20
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind21
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind22
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind23
+		jump SelectUnit_ValidateUnit always 0 0
+		ubind unitBind24
+		jump SelectUnit_ValidateUnit always 0 0
+
+	SelectUnit_ValidateUnit:
+		sensor unitDead @unit @dead
+		sensor unitController @unit @controller
+		op notEqual unitNotOurs unitController @this
+		op or somethingWrong unitDead unitNotOurs
+		jump SelectUnit_Iterate equal somethingWrong false
+
+	SelectUnit_BindNewUnit:
+		ubind unitType
+		jump SelectUnit_BindNewUnit equal @unit null
+		sensor newUnitController @unit @controller
+		jump SelectUnit_IterateAndRestart equal newUnitController @this
+		jump SelectUnit_BindNewUnit notEqual newUnitController @unit
+		ucontrol stop 0 0 0 0 0
+
+		op add @counter @counter unitIndex
+		set unitBind01 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind02 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind03 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind04 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind05 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind06 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind07 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind08 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind09 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind10 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind11 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind12 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind13 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind14 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind15 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind16 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind17 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind18 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind19 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind20 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind21 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind22 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind23 @unit
+		jump SelectUnit_Iterate always 0 0
+		set unitBind24 @unit
+		jump SelectUnit_Iterate always 0 0
+
+	SelectUnit_IterateAndRestart:
+		op add unitIndex unitIndex 2
+		jump SelectUnit_IterateAndRestartEnd lessThanEq unitIndex unitIndexLimit
+		set unitIndex 0
+		set unitsBinded unitsCounter
+		set unitsCounter 0
+	SelectUnit_IterateAndRestartEnd:
+		jump Start_SelectUnit always 0 0
+
+	SelectUnit_Iterate:
+		op add unitIndex unitIndex 2
+		op add unitsCounter unitsCounter 1
+		jump SelectUnit_IterateEnd lessThanEq unitIndex unitIndexLimit
+		set unitIndex 0
+		set unitsBinded unitsCounter
+		set unitsCounter 0
+	SelectUnit_IterateEnd:
+
+		jump Start_Init equal init 0
+End_SelectUnit:
+
+
+Start_GetOutOfTheWay:
+		uradar ally flying any distance 0 1 allyUnit
+		sensor unitX @unit @x
+		sensor unitY @unit @y
+		jump End_GetOutOfTheWay equal allyUnit null
+		sensor allySize allyUnit @size
+		sensor allyX allyUnit @x
+		sensor allyY allyUnit @y
+		# sensor unitX @unit @x
+		# sensor unitY @unit @y
+		op sub unitAllyX unitX allyX
+		op sub unitAllyY unitY allyY
+	
+		op add moveDistance unitSize allySize
+		op mul stayAwayRange moveDistance 0.8
+		op len unitAllyDistance unitAllyX unitAllyY
+		jump End_GetOutOfTheWay greaterThan unitAllyDistance stayAwayRange
+	
+		sensor allyRotation allyUnit @rotation
+		op sub allyAnchorX anchorX allyX
+		op sub allyAnchorY anchorY allyY
+		op angle allyAnchorRotation allyAnchorX allyAnchorY
+		op angleDiff allyAnchorTravelDifference allyRotation allyAnchorRotation
+		
+		ucontrol approach allyX allyY moveDistance 0 0
+
+		jump End_GetOutOfTheWay greaterThan allyAnchorTravelDifference 5
+		end
+End_GetOutOfTheWay:
+
+
+Start_Mine:
+		ulocate building core false @copper coreX coreY coreFound core
+		sensor coreItemCapacity core @itemCapacity
+		op mul coreItemTarget coreItemCapacity oreFillTarget
+		set getOre null
+		set oreLowest 999999999
+
+		op sub dangerousOreTimeElapsed @time dangerousOreLastChanged
+		jump Mine_DangerousOreEnd lessThan dangerousOreTimeElapsed 30000
+		set dangerousOre null
+	Mine_DangerousOreEnd:
+
+		op and oreIsDangerous dangerousOre oreBitCopper
+		jump Mine_CopperEnd notEqual oreIsDangerous 0
+		sensor oreCopper core @copper
+		set getOreBit oreBitCopper
+		set getOre @copper
+		set oreLowest oreCopper
+	Mine_CopperEnd:
+
+		op and oreIsDangerous dangerousOre oreBitLead
+		jump Mine_LeadEnd notEqual oreIsDangerous 0
+		sensor oreLead core @lead
+		jump Mine_LeadEnd greaterThanEq oreLead oreLowest
+		set getOreBit oreBitLead
+		set getOre @lead
+		set oreLowest oreLead
+	Mine_LeadEnd:
+
+		jump Mine_ScrapEnd notEqual scrapFound true
+		op and oreIsDangerous dangerousOre oreBitScrap
+		jump Mine_ScrapEnd notEqual oreIsDangerous 0
+		sensor oreScrap core @scrap
+		jump Mine_ScrapEnd greaterThanEq oreScrap oreLowest
+		set getOreBit oreBitScrap
+		set getOre @scrap
+		set oreLowest oreScrap
+	Mine_ScrapEnd:
+
+		jump Mine_SandEnd notEqual sandFound true
+		op and oreIsDangerous dangerousOre oreBitSand
+		jump Mine_SandEnd notEqual oreIsDangerous 0
+		sensor oreSand core @sand
+		jump Mine_SandEnd greaterThanEq oreSand oreLowest
+		set getOreBit oreBitSand
+		set getOre @sand
+		set oreLowest oreSand
+	Mine_SandEnd:
+
+		jump Mine_TasksCompleted equal getOre null
+		sensor oreHeld @unit @firstItem
+		op notEqual badOre getOre oreHeld
+		sensor hasOre @unit @totalItems
+		op land returnOre badOre hasOre
+		jump Mine_ApproachHome equal returnOre true
+
+		sensor coreOre core getOre
+		jump Mine_TasksCompleted greaterThanEq coreOre coreItemTarget
+		jump Mine_ApproachHome greaterThanEq hasOre unitItemCapacity
+
+		ulocate ore core true getOre oreX oreY oreFound building
+		jump Mine_TasksCompleted equal oreFound false
+
+		ulocate spawn core true @copper dangerX dangerY spawnFound spawnBuilding
+		op sub sDistanceX dangerX oreX
+		op sub sDistanceY dangerY oreY
+		op len sDistance sDistanceX sDistanceY
+		jump Mine_UpdateDangerousOre lessThan sDistance spawnRange
+
+		ulocate building turret true @copper dangerX dangerY enemyTurretFound enemyTurret
+		jump Mine_MineOre equal enemyTurretFound false
+
+		op sub sDistanceX dangerX oreX
+		op sub sDistanceY dangerY oreY
+		op len sDistance sDistanceX sDistanceY
+		jump Mine_UpdateDangerousOre lessThan sDistance turretRange
+
+		op sub sDistanceX anchorX oreX
+		op sub sDistanceY anchorY oreY
+		op len sDistance sDistanceX sDistanceY
+		jump Mine_UpdateDangerousOre greaterThan sDistance exploreDistance
+
+	Mine_MineOre:
+		ucontrol mine oreX oreY 0 0 0
+	Mine_ApproachOre:
+		ucontrol approach oreX oreY 2 0 0
+		end
+
+	Mine_ApproachHome:
+		ucontrol itemDrop core 9001 0 0 0
+		ucontrol within coreX coreY 4 withinRange 0
+		op land shouldReverse hasOre withinRange
+		ucontrol stop 0 0 0 0 0
+		jump Mine_ApproachOre equal shouldReverse true
+		ucontrol approach coreX coreY 2 0 0
+		end
+
+	Mine_UpdateDangerousOre:
+		op xor dangerousOre dangerousOre getOreBit
+		set dangerousOreLastChanged @time
+
+	Mine_TasksCompleted:
+		jump Mine_ApproachHome greaterThan hasOre 0
+End_Mine:
+
+
+Start_PlayerRetreat:
+		uradar player ally any distance 0 1 playerUnit
+		jump End_PlayerRetreat equal playerUnit null
+		ucontrol targetp playerUnit 0 0 0 0
+		sensor playerX playerUnit @x
+		sensor playerY playerUnit @y
+		ucontrol approach playerX playerY 25 0 0
+		end
+End_PlayerRetreat:
+
+
+Start_StayWithinCore:
+	ucontrol within coreX coreY 50 withinCore 0
+	jump End_StayWithinCore equal withinCore true
+	ucontrol approach coreX coreY 45 0 0
+	end
+End_StayWithinCore:
+
+
+Start_Idle:
+	ucontrol stop 0 0 0 0 0
+	end
+End_Idle:
