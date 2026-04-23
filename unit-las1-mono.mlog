@@ -1,4 +1,5 @@
-# Mines ore, including scrap and sand. Avoids dangerous mining locations.
+# Mines ore, including scrap and sand.
+# Tries to avoid dangerous mining locations.
 
 Start_Init:
 		jump End_Init equal init 1
