@@ -1,5 +1,5 @@
 # This works with the entire Flare tree, except for the Horizon.
-# Well, I wouldn't recommend using this with the Flare itself either,
+# Well, I wouldn't recommend using this with the Flare itself,
 #  due to how weak the Flare is - and its utility for moving cargo.
 # Also, it may behave strangely if you don't have repair units.
 # This is because damaged buildings are a method of locating enemy attacks.
