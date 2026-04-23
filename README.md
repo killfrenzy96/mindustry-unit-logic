@@ -5,6 +5,8 @@ Additionally, there is some level of player control. Units will move to where yo
 
 When the units have nothing to do, they will idle in range of a repair turret. If you have none, they will idle around the core instead - though I highly recommend you build a repair turret so that units can heal up.
 
+Schematics for these scripts are available on the Steam Workshop: https://steamcommunity.com/id/killfrenzy96/myworkshopfiles/?appid=1127400&p=1
+
 I may record a showcase if there's enough interest in my unit logic.
 
 ### Config
