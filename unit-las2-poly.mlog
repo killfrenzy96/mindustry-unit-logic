@@ -209,8 +209,6 @@ Start_Repair:
 		jump Repair_UpdateBest always 0 0
 
 	Repair_TestBest:
-		jump Repair_UpdateBest equal bestRepair null
-
 		sensor bestRepairDead bestRepair @dead
 		jump Repair_RemoveBest equal bestRepairDead true
 		sensor bestRepairPower bestRepair @powerNetIn
