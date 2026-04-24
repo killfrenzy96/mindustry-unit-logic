@@ -188,14 +188,18 @@ Start_Repair:
 		ulocate building repair false @copper repairX repairY repairFound repairBuilding
 		jump Repair_AnchorToCore equal repairFound false
 
-		sensor repairPower repairBuilding @powerNetIn
+		sensor repairPowerIn repairBuilding @powerNetIn
+		sensor repairPowerStored repairBuilding @powerNetStored
+		op add repairPower repairPowerIn repairPowerStored
 		jump Repair_TestBest equal repairPower 0
 		jump Repair_UpdateBest always 0 0
 
 	Repair_TestBest:
 		sensor bestRepairDead bestRepair @dead
 		jump Repair_RemoveBest equal bestRepairDead true
-		sensor bestRepairPower bestRepair @powerNetIn
+		sensor bestRepairPowerIn bestRepair @powerNetIn
+		sensor bestRepairPowerStored repairBuilding @powerNetStored
+		op add bestRepairPower bestRepairPowerIn bestRepairPowerStored
 		jump Repair_RemoveBest equal bestRepairPower 0
 
 		jump Repair_UpdateBest always 0 0
