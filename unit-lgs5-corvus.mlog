@@ -37,8 +37,8 @@ Start_Init:
 		op mul unitSupportRange unitRange 0.75
 		op mul unitHalfRange unitRange 0.5
 		op mul unitEvasiveness unitSpeed 5
-		op mul unitFormationDistanceMin unitSize 200
-		op mul unitFormationDistanceMax unitSize 450
+		op mul unitFormationDistanceMin unitSize 150
+		op mul unitFormationDistanceMax unitSize 300
 		sensor unitMaxHealth @unit @maxHealth
 		set init 1
 End_Init:
