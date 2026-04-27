@@ -449,6 +449,13 @@ Start_EnemyUnits:
 			set allyBuildingX bestAllyBuildingX
 			set allyBuildingY bestAllyBuildingY
 		EnemyUnits_HideBehindBuilding_Approach:
+			op sub enemyDistanceX unitX enemyX
+			op sub enemyDistanceY unitY enemyY
+			op len enemyDistance enemyDistanceX enemyDistanceY
+			op sub unitBuildingDistanceX unitX allyBuildingX
+			op sub unitBuildingDistanceY unitY allyBuildingY
+			op len unitBuildingDistance unitBuildingDistanceX unitBuildingDistanceY
+			jump EnemyUnits_HideBehindBuilding_End lessThan enemyDistance unitBuildingDistance
 			op sub allyBuildingDistanceX allyBuildingX enemyPredictedX
 			op sub allyBuildingDistanceY allyBuildingY enemyPredictedY
 			op len allyBuildingDistance allyBuildingDistanceX allyBuildingDistanceY
