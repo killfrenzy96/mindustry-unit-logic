@@ -7,7 +7,7 @@ Start_Init:
 		set gitHub https://github.com/killfrenzy96/mindustry-unit-logic
 		set unitType @mono
 		set bindLimit 8
-		set oreFillTarget 0.9
+		set oreFillTarget 0.95
 		set spawnRange 50
 		set turretRange 38
 		set exploreDistance 1000

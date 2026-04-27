@@ -16,7 +16,7 @@ Start_Init:
 		set spawnRange 50
 		set turretRange 38
 		set focusOnMining true
-		set oreFillTarget 0.8
+		set oreFillTarget 0.9
 		set coreRepairTarget 0.95
 		set retreatHealth 0.8
 		set exploreDistance 1000

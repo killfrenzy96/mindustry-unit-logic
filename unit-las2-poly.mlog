@@ -18,7 +18,7 @@ Start_Init:
 		set turretRange 38
 		set coreRepairTarget 0.95
 		set focusOnMining false
-		set oreFillTarget 0.8
+		set oreFillTarget 0.95
 		set retreatHealth 0.8
 		set exploreDistance 1000
 
