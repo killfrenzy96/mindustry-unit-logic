@@ -389,6 +389,7 @@ Start_EnemyUnits:
 		# sensor unitY @unit @y
 		sensor enemyX enemyUnit @x
 		sensor enemyY enemyUnit @y
+		sensor enemySpeed enemyUnit @speed
 		sensor enemyVelocityX enemyUnit @velocityX
 		sensor enemyVelocityY enemyUnit @velocityY
 		op add enemyPredictedX enemyX enemyVelocityX
@@ -464,6 +465,7 @@ Start_EnemyUnits:
 			set allyBuildingX bestAllyBuildingX
 			set allyBuildingY bestAllyBuildingY
 		EnemyUnits_HideBehindBuilding_Approach:
+			jump EnemyUnits_HideBehindBuilding_EnemyIsInterceptor greaterThan enemySpeed 11
 			op sub enemyDistanceX unitX enemyX
 			op sub enemyDistanceY unitY enemyY
 			op len enemyDistance enemyDistanceX enemyDistanceY
@@ -471,6 +473,7 @@ Start_EnemyUnits:
 			op sub unitBuildingDistanceY unitY allyBuildingY
 			op len unitBuildingDistance unitBuildingDistanceX unitBuildingDistanceY
 			jump EnemyUnits_HideBehindBuilding_End lessThan enemyDistance unitBuildingDistance
+		EnemyUnits_HideBehindBuilding_EnemyIsInterceptor:
 			op sub allyBuildingDistanceX allyBuildingX enemyPredictedX
 			op sub allyBuildingDistanceY allyBuildingY enemyPredictedY
 			op len allyBuildingDistance allyBuildingDistanceX allyBuildingDistanceY
