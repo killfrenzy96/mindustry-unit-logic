@@ -283,16 +283,20 @@ Start_GetOutOfTheWay:
 		op len unitAllyDistance unitAllyX unitAllyY
 		jump End_GetOutOfTheWay greaterThan unitAllyDistance stayAwayRange
 
-		sensor allyRotation allyUnit @rotation
-		op sub allyAnchorX anchorX allyX
-		op sub allyAnchorY anchorY allyY
-		op angle allyAnchorRotation allyAnchorX allyAnchorY
-		op angleDiff allyAnchorTravelDifference allyRotation allyAnchorRotation
+		sensor allyHealth allyUnit @health
+		sensor allyMaxHealth allyUnit @maxHealth
+		op div allyHealthPercent allyHealth allyMaxHealth
 
+		ucontrol idle 0 0 0 0 0
+
+		sensor allyControlled allyUnit @controlled
+		jump End_GetOutOfTheWay notEqual allyControlled @ctrlProcessor
+
+		sensor allyController allyUnit @controller
+		read allyRetreatHealth allyController "retreatHealth"
+		jump End_GetOutOfTheWay equal allyRetreatHealth null
+		jump End_GetOutOfTheWay greaterThan allyHealthPercent allyRetreatHealth
 		ucontrol approach allyX allyY moveDistance 0 0
-
-		jump End_GetOutOfTheWay greaterThan allyAnchorTravelDifference 5
-		end
 End_GetOutOfTheWay:
 
 
