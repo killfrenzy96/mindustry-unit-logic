@@ -142,6 +142,7 @@ Start_SelectUnit:
 
 	SelectUnit_IdleActions:
 		jump SelectUnit_BindNewUnit equal isIdle false
+		jump SelectUnit_BindNewUnit equal core null
 		jump SelectUnit_Iterate always 0 0
 
 	SelectUnit_BindNewUnit:
@@ -548,13 +549,20 @@ Start_CargoBalancer:
 		sensor unitItemCount @unit @totalItems
 		sensor unitController @unit @controller
 		jump CargoBalancer_ValidateDropoffUnit greaterThan unitItemCount 0
+	CargoBalancer_ValidatePickup:
 		jump CargoBalancer_HandleItemPickup equal itemPickupValid true
 		jump End_CargoBalancer always 0 0
 		end
 
 		CargoBalancer_ValidateDropoffUnit:
 			jump CargoBalancer_ValidateDropoffUnitContinue equal unitController @this
+			jump CargoBalancer_ValidateDropoffUnitDropItemAndPickup equal unitController @unit
 			end
+		CargoBalancer_ValidateDropoffUnitDropItemAndPickup:
+			jump End_CargoBalancer equal itemPickupValid false
+			ucontrol itemDrop @air 9001 0 0 0
+			jump CargoBalancer_HandleItemPickup always 0 0
+			
 		CargoBalancer_ValidateDropoffUnitContinue:
 
 		sensor heldSourceCount source unitItemType
@@ -611,12 +619,12 @@ Start_CargoBalancer:
 	CargoBalancer_PrioritizeTargetContainer:
 		jump CargoBalancer_PickupItemsFromSource notEqual targetItem null
 		jump CargoBalancer_PickupItemsFromTarget notEqual sourceItem null
-		set debug @second
 		end
 
 	CargoBalancer_PickupItemsFromSource:
 		CargoBalancer_ValidatePickupSourceUnit:
 			jump CargoBalancer_ValidatePickupSourceUnitContinue equal unitController @this
+			jump CargoBalancer_ValidatePickupSourceUnitContinue equal unitController @unit
 			end
 		CargoBalancer_ValidatePickupSourceUnitContinue:
 
@@ -635,6 +643,7 @@ Start_CargoBalancer:
 	CargoBalancer_PickupItemsFromTarget:
 		CargoBalancer_ValidatePickupTargetUnit:
 			jump CargoBalancer_ValidatePickupTargetUnitContinue equal unitController @this
+			jump CargoBalancer_ValidatePickupTargetUnitContinue equal unitController @unit
 			end
 		CargoBalancer_ValidatePickupTargetUnitContinue:
 
