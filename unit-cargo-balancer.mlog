@@ -3,8 +3,8 @@
 
 # `unitType`: The unit used for transportation. `flare` is a great choice for fast low quantity item transport. `zenith` or `mega` is a good choice if high throughput is required.
 # `bindLimit`: The amount of units to use for transportation. Maximum of 24 units.
-# `source`: The first container.
-# `target`: The second container.
+# `source`: The first container. By default, uses the core.
+# `target`: The second container. By default, uses the first linked building.
 # `idleAt`: Where the unit should idle when its tasks are completed. If set to `null`, this will instead unbind the unit, which frees up the unit for other processors to use.
 # `sourceWanted` : For the first container, items will not be pushed to this container of it has more than the specified percent of items. Setting this too high may accidentally fill the container, resulting in delivery ships hovering over the container.
 # `targetWanted`: For the second container, items will not be pushed to this container of it has more than the specified percent of items. Setting this too high may accidentally fill the container, resulting in delivery ships hovering over the container.
