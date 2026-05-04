@@ -23,7 +23,7 @@ Start_Init:
 		set unitType @flare
 		set bindLimit 8
 		set source core
-		set target vault1
+		set target link
 		set idleAt null
 		set sourceWanted 0.5
 		set targetWanted 0.5
@@ -49,6 +49,7 @@ Start_Init:
 		op sub unitIndexLimit unitIndexLimit 1
 		jump Start_SelectUnit equal @unit null
 
+		getlink link 0
 		sensor sourceDead source @dead
 		sensor targetDead target @dead
 		sensor idleAtDead idleAt @dead
