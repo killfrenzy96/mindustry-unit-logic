@@ -144,6 +144,7 @@ Start_SelectUnit:
 	SelectUnit_IdleActions:
 		jump SelectUnit_BindNewUnit equal isIdle false
 		jump SelectUnit_BindNewUnit equal core null
+		jump SelectUnit_BindNewUnit equal init 0
 		jump SelectUnit_Iterate always 0 0
 
 	SelectUnit_BindNewUnit:
@@ -251,7 +252,9 @@ End_ValidateContainers:
 
 Start_CargoBalancer:
 		op sub refreshTimeElapsed @time lastRefresh
+		jump CargoBalancer_Continue lessThan refreshTimeElapsed 0
 		jump CargoBalancer_Begin lessThan refreshTimeElapsed refreshInterval
+	CargoBalancer_Continue:
 
 		set sourceItemNeeded null
 		set targetItemNeeded null
