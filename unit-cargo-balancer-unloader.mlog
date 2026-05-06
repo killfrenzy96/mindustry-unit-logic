@@ -251,7 +251,17 @@ Start_ValidateContainers:
 End_ValidateContainers:
 
 
-Start_UpdateItemConfig:
+Start_CargoBalancer:
+		op sub refreshTimeElapsed @time lastRefresh
+		jump CargoBalancer_Continue lessThan refreshTimeElapsed 0
+		jump CargoBalancer_Begin lessThan refreshTimeElapsed refreshInterval
+	CargoBalancer_Continue:
+
+		set sourceItemNeeded null
+		set targetItemNeeded null
+		set sourceDifference minDifference
+		set targetDifference minDifference
+
 		sensor item1 unloader1 @config
 		sensor item2 unloader2 @config
 		sensor item3 unloader3 @config
@@ -264,19 +274,6 @@ Start_UpdateItemConfig:
 		sensor item10 unloader10 @config
 		sensor item11 unloader11 @config
 		sensor item12 unloader12 @config
-End_UpdateItemConfig:
-
-
-Start_CargoBalancer:
-		op sub refreshTimeElapsed @time lastRefresh
-		jump CargoBalancer_Continue lessThan refreshTimeElapsed 0
-		jump CargoBalancer_Begin lessThan refreshTimeElapsed refreshInterval
-	CargoBalancer_Continue:
-
-		set sourceItemNeeded null
-		set targetItemNeeded null
-		set sourceDifference minDifference
-		set targetDifference minDifference
 
 		jump CargoBalancer_SetupVariables equal item1 null
 		sensor sCount1 source item1
