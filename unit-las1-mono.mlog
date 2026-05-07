@@ -10,6 +10,7 @@ Start_Init:
 		set oreFillTarget 0.95
 		set spawnRange 50
 		set turretRange 38
+		set playerRetreat true
 		set exploreDistance 1000
 
 		op mul unitIndexLimit bindLimit 2
@@ -316,12 +317,20 @@ End_Mine:
 
 
 Start_PlayerRetreat:
+		jump End_PlayerRetreat equal playerRetreat false
 		uradar player ally any distance 0 1 playerUnit
 		jump End_PlayerRetreat equal playerUnit null
 		ucontrol targetp playerUnit 0 0 0 0
 		sensor playerX playerUnit @x
 		sensor playerY playerUnit @y
-		ucontrol approach playerX playerY 25 0 0
+		op mul maintainSeparation unitRange 0.5
+		ucontrol within playerX playerY maintainSeparation withinPlayer 0
+		jump PlayerRetreat_MaintainSeperation equal withinPlayer false
+		op mul maintainDistance unitRange 0.75
+		ucontrol approach playerX playerY maintainDistance 0 0
+		end
+	PlayerRetreat_MaintainSeperation:
+		ucontrol stop 0 0 0 0 0
 		end
 End_PlayerRetreat:
 

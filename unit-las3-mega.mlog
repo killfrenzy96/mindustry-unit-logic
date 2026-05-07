@@ -1276,10 +1276,10 @@ Start_PlayerRetreat:
 		ucontrol targetp playerUnit 0 0 0 0
 		sensor playerX playerUnit @x
 		sensor playerY playerUnit @y
-		op sub maintainSeparation unitRange 5
+		op mul maintainSeparation unitRange 0.5
 		ucontrol within playerX playerY maintainSeparation withinPlayer 0
 		jump PlayerRetreat_MaintainSeperation equal withinPlayer false
-		op sub maintainDistance unitRange 1
+		op mul maintainDistance unitRange 0.75
 		ucontrol approach playerX playerY maintainDistance 0 0
 		end
 	PlayerRetreat_MaintainSeperation:
