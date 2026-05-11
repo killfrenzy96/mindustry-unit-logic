@@ -1,5 +1,5 @@
 # My own cargo transportation logic.
-# Balances up to 12 different items between 2 containers.
+# Balances up to 16 different items between 2 containers.
 # This variation is a modification of the cargo balancer, allowing it to dynamically allocate items depending on the config of linked unloaders.
 
 # `unitType`: The unit used for transportation. `flare` is a great choice for fast low quantity item transport. `zenith` or `mega` is a good choice if high throughput is required.
@@ -13,7 +13,7 @@
 # `minDifference`: The minimum difference in percentage of the fill levels between both containers. If this is set too low, units may end up wasting time by repeatedly picking up and dropping items to the same container.
 # `refreshInterval`: The minimum interval between inventory refreshing. Refreshing the inventory calulations can be very slow, reducing unit responsiveness.
 # `item_name`: Just a field I use to copy and paste item names. Otherwise, it does nothing.
-# `item1` to `item12`: The items to interact with. Instead of being manually set, this version reads items from unloader's configs.
+# `item1` to `item16`: The items to interact with. Instead of being manually set, this version reads items from unloader's configs.
 
 # Important note: Setting either `sourceWanted` or `targetWanted` to `0` will effectively result in a one-way item transfer.
 
