@@ -62,6 +62,7 @@ Start_Init:
 		set idleAtY @thisy
 
 		jump Init_SourceValidationEnd equal sourceDead true
+		op equal sourceIsCore source core
 		sensor sourceX source @x
 		sensor sourceY source @y
 		sensor sourceCapacity source @itemCapacity
@@ -69,6 +70,7 @@ Start_Init:
 	Init_SourceValidationEnd:
 
 		jump Init_TargetValidationEnd equal targetDead true
+		op equal targetIsCore target core
 		sensor targetX target @x
 		sensor targetY target @y
 		sensor targetCapacity target @itemCapacity
@@ -241,6 +243,18 @@ End_SelectUnit:
 Start_ValidateContainers:
 		jump ValidateContainers_Begin equal isIdle true
 		ulocate building core false @copper coreX coreY coreFound core
+
+		jump ValidateContainers_UpdateSourceCore_End equal sourceIsCore false
+		set source core
+		sensor sourceX source @x
+		sensor sourceY source @y
+	ValidateContainers_UpdateSourceCore_End:
+
+		jump ValidateContainers_UpdateTargetCore_End equal targetIsCore false
+		set target core
+		sensor targetX target @x
+		sensor targetY target @y
+	ValidateContainers_UpdateTargetCore_End:
 
 	ValidateContainers_Begin:
 		sensor sourceDead source @dead
