@@ -685,7 +685,8 @@ Start_CargoBalancer:
 			jump CargoBalancer_ApproachDropoffTarget equal shouldReverse true
 		CargoBalancer_ApproachDropoffSource:
 			ucontrol move sourceX sourceY 5 0 0
-			end
+			# end
+			jump CargoBalancer_Finish always 0 0
 
 	CargoBalancer_DropItemsToTarget:
 			ucontrol boost 1 0 0 0 0
@@ -699,7 +700,8 @@ Start_CargoBalancer:
 			jump CargoBalancer_ApproachDropoffSource equal shouldReverse true
 		CargoBalancer_ApproachDropoffTarget:
 			ucontrol move targetX targetY 5 0 0
-			end
+			# end
+			jump CargoBalancer_Finish always 0 0
 
 	CargoBalancer_HandleItemPickup:
 		set isIdle false
@@ -738,7 +740,8 @@ Start_CargoBalancer:
 			jump CargoBalancer_ApproachPickupTarget equal shouldReverse true
 		CargoBalancer_ApproachPickupSource:
 			ucontrol move sourceX sourceY 5 0 0
-			end
+			# end
+			jump CargoBalancer_Finish always 0 0
 
 	CargoBalancer_PickupItemsFromTarget:
 		CargoBalancer_ValidatePickupTargetUnit:
@@ -757,7 +760,17 @@ Start_CargoBalancer:
 			jump CargoBalancer_ApproachPickupSource equal shouldReverse true
 		CargoBalancer_ApproachPickupTarget:
 			ucontrol move targetX targetY 5 0 0
-			end
+			# end
+			jump CargoBalancer_Finish always 0 0
+
+	CargoBalancer_Finish:
+		uradar enemy any any distance 0 1 enemyUnit
+		jump CargoBalancer_NoEnemyTargets equal enemyUnit null
+		ucontrol targetp enemyUnit 1 0 0 0
+		end
+	CargoBalancer_NoEnemyTargets:
+		ucontrol targetp null 0 0 0 0
+		end
 End_CargoBalancer:
 
 
