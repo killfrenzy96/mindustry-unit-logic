@@ -1,5 +1,5 @@
 # My own cargo transportation logic.
-# Balances up to 12 different items between 2 containers.
+# Balances up to 16 different items between 2 containers.
 
 # `unitType`: The unit used for transportation. `flare` is a great choice for fast low quantity item transport. `zenith` or `mega` is a good choice if high throughput is required.
 # `bindLimit`: The amount of units to use for transportation. Maximum of 24 units.
@@ -12,7 +12,7 @@
 # `minDifference`: The minimum difference in percentage of the fill levels between both containers. If this is set too low, units may end up wasting time by repeatedly picking up and dropping items to the same container.
 # `refreshInterval`: The minimum interval between inventory refreshing. Refreshing the inventory calulations can be very slow, reducing unit responsiveness.
 # `item_name`: Just a field I use to copy and paste item names. Otherwise, it does nothing.
-# `item1` to `item12`: The items to interact with. Do not place a `null` between valid items.
+# `item1` to `item16`: The items to interact with. Do not place a `null` between valid items.
 
 # Important note: Setting either `sourceWanted` or `targetWanted` to `0` will effectively result in a one-way item transfer.
 
@@ -44,6 +44,10 @@ Start_Init:
 		set item10 null
 		set item11 null
 		set item12 null
+		set item13 null
+		set item14 null
+		set item15 null
+		set item16 null
 
 		op mul unitIndexLimit bindLimit 2
 		op sub unitIndexLimit unitIndexLimit 1
@@ -536,6 +540,98 @@ Start_CargoBalancer:
 		set targetItemNeeded item12
 		set targetDifference stDifference12
 	CargoBalancer_Item12End:
+
+		jump CargoBalancer_SetupVariables equal item13 null
+		sensor sCount13 source item13
+		sensor tCount13 target item13
+		op div sFill13 sCount13 sourceCapacity
+		op div tFill13 tCount13 targetCapacity
+		op sub stDifference13 sFill13 tFill13
+		op abs stDifference13 stDifference13 0
+		op mul sScore13 sFill13 targetWanted
+		op mul tScore13 tFill13 sourceWanted
+		jump CargoBalancer_Item13TargetLower lessThan tScore13 sScore13
+		jump CargoBalancer_Item13End lessThanEq stDifference13 sourceDifference
+		jump CargoBalancer_Item13End greaterThanEq sFill13 sourceWanted
+		jump CargoBalancer_Item13End lessThanEq tFill13 keepMinimum
+		set sourceItemNeeded item13
+		set sourceDifference stDifference13
+	CargoBalancer_Item13TargetLower:
+		jump CargoBalancer_Item13End lessThanEq stDifference13 targetDifference
+		jump CargoBalancer_Item13End greaterThanEq tFill13 targetWanted
+		jump CargoBalancer_Item13End lessThanEq sFill13 keepMinimum
+		set targetItemNeeded item13
+		set targetDifference stDifference13
+	CargoBalancer_Item13End:
+
+		jump CargoBalancer_SetupVariables equal item14 null
+		sensor sCount14 source item14
+		sensor tCount14 target item14
+		op div sFill14 sCount14 sourceCapacity
+		op div tFill14 tCount14 targetCapacity
+		op sub stDifference14 sFill14 tFill14
+		op abs stDifference14 stDifference14 0
+		op mul sScore14 sFill14 targetWanted
+		op mul tScore14 tFill14 sourceWanted
+		jump CargoBalancer_Item14TargetLower lessThan tScore14 sScore14
+		jump CargoBalancer_Item14End lessThanEq stDifference14 sourceDifference
+		jump CargoBalancer_Item14End greaterThanEq sFill14 sourceWanted
+		jump CargoBalancer_Item14End lessThanEq tFill14 keepMinimum
+		set sourceItemNeeded item14
+		set sourceDifference stDifference14
+	CargoBalancer_Item14TargetLower:
+		jump CargoBalancer_Item14End lessThanEq stDifference14 targetDifference
+		jump CargoBalancer_Item14End greaterThanEq tFill14 targetWanted
+		jump CargoBalancer_Item14End lessThanEq sFill14 keepMinimum
+		set targetItemNeeded item14
+		set targetDifference stDifference14
+	CargoBalancer_Item14End:
+
+		jump CargoBalancer_SetupVariables equal item15 null
+		sensor sCount15 source item15
+		sensor tCount15 target item15
+		op div sFill15 sCount15 sourceCapacity
+		op div tFill15 tCount15 targetCapacity
+		op sub stDifference15 sFill15 tFill15
+		op abs stDifference15 stDifference15 0
+		op mul sScore15 sFill15 targetWanted
+		op mul tScore15 tFill15 sourceWanted
+		jump CargoBalancer_Item15TargetLower lessThan tScore15 sScore15
+		jump CargoBalancer_Item15End lessThanEq stDifference15 sourceDifference
+		jump CargoBalancer_Item15End greaterThanEq sFill15 sourceWanted
+		jump CargoBalancer_Item15End lessThanEq tFill15 keepMinimum
+		set sourceItemNeeded item15
+		set sourceDifference stDifference15
+	CargoBalancer_Item15TargetLower:
+		jump CargoBalancer_Item15End lessThanEq stDifference15 targetDifference
+		jump CargoBalancer_Item15End greaterThanEq tFill15 targetWanted
+		jump CargoBalancer_Item15End lessThanEq sFill15 keepMinimum
+		set targetItemNeeded item15
+		set targetDifference stDifference15
+	CargoBalancer_Item15End:
+
+		jump CargoBalancer_SetupVariables equal item16 null
+		sensor sCount16 source item16
+		sensor tCount16 target item16
+		op div sFill16 sCount16 sourceCapacity
+		op div tFill16 tCount16 targetCapacity
+		op sub stDifference16 sFill16 tFill16
+		op abs stDifference16 stDifference16 0
+		op mul sScore16 sFill16 targetWanted
+		op mul tScore16 tFill16 sourceWanted
+		jump CargoBalancer_Item16TargetLower lessThan tScore16 sScore16
+		jump CargoBalancer_Item16End lessThanEq stDifference16 sourceDifference
+		jump CargoBalancer_Item16End greaterThanEq sFill16 sourceWanted
+		jump CargoBalancer_Item16End lessThanEq tFill16 keepMinimum
+		set sourceItemNeeded item16
+		set sourceDifference stDifference16
+	CargoBalancer_Item16TargetLower:
+		jump CargoBalancer_Item16End lessThanEq stDifference16 targetDifference
+		jump CargoBalancer_Item16End greaterThanEq tFill16 targetWanted
+		jump CargoBalancer_Item16End lessThanEq sFill16 keepMinimum
+		set targetItemNeeded item16
+		set targetDifference stDifference16
+	CargoBalancer_Item16End:
 
 	CargoBalancer_SetupVariables:
 		op or itemPickupValid sourceItem targetItem
