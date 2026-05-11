@@ -29,7 +29,7 @@ Start_Init:
 		set sourceWanted 0
 		set targetWanted 0.65
 		set keepMinimum 0.01
-		set minDifference 0.025
+		set minDifference 0.05
 		set refreshInterval 3000
 
 		sensor item_name copy_this @copper
@@ -263,8 +263,8 @@ Start_CargoBalancer:
 
 		set sourceItemNeeded null
 		set targetItemNeeded null
-		set sourceDifference minDifference
-		set targetDifference minDifference
+		op mul sourceDifference minDifference targetWanted
+		op mul targetDifference minDifference sourceWanted
 
 		sensor item1 unloader1 @config
 		sensor item2 unloader2 @config
