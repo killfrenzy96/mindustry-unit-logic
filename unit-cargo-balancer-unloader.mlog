@@ -83,7 +83,7 @@ Start_Init:
 
 		jump ValidateContainers_ResetInit equal source null
 		jump ValidateContainers_ResetInit equal target null
-		jump ValidateContainers_ResetInit equal item1 null
+		# jump ValidateContainers_ResetInit equal item1 null
 		set init 1
 End_Init:
 
