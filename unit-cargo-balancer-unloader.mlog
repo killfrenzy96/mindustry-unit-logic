@@ -283,7 +283,7 @@ Start_CargoBalancer:
 		sensor item15 unloader15 @config
 		sensor item16 unloader16 @config
 
-		jump CargoBalancer_SetupVariables equal item1 null
+		jump CargoBalancer_Item1End equal item1 null
 		sensor sCount1 source item1
 		sensor tCount1 target item1
 		op div sFill1 sCount1 sourceCapacity
@@ -306,7 +306,7 @@ Start_CargoBalancer:
 		set targetDifference stDifference1
 	CargoBalancer_Item1End:
 
-		jump CargoBalancer_SetupVariables equal item2 null
+		jump CargoBalancer_Item2End equal item2 null
 		sensor sCount2 source item2
 		sensor tCount2 target item2
 		op div sFill2 sCount2 sourceCapacity
@@ -329,7 +329,7 @@ Start_CargoBalancer:
 		set targetDifference stDifference2
 	CargoBalancer_Item2End:
 
-		jump CargoBalancer_SetupVariables equal item3 null
+		jump CargoBalancer_Item3End equal item3 null
 		sensor sCount3 source item3
 		sensor tCount3 target item3
 		op div sFill3 sCount3 sourceCapacity
@@ -352,7 +352,7 @@ Start_CargoBalancer:
 		set targetDifference stDifference3
 	CargoBalancer_Item3End:
 
-		jump CargoBalancer_SetupVariables equal item4 null
+		jump CargoBalancer_Item4End equal item4 null
 		sensor sCount4 source item4
 		sensor tCount4 target item4
 		op div sFill4 sCount4 sourceCapacity
@@ -375,7 +375,7 @@ Start_CargoBalancer:
 		set targetDifference stDifference4
 	CargoBalancer_Item4End:
 
-		jump CargoBalancer_SetupVariables equal item5 null
+		jump CargoBalancer_Item5End equal item5 null
 		sensor sCount5 source item5
 		sensor tCount5 target item5
 		op div sFill5 sCount5 sourceCapacity
@@ -398,7 +398,7 @@ Start_CargoBalancer:
 		set targetDifference stDifference5
 	CargoBalancer_Item5End:
 
-		jump CargoBalancer_SetupVariables equal item6 null
+		jump CargoBalancer_Item6End equal item6 null
 		sensor sCount6 source item6
 		sensor tCount6 target item6
 		op div sFill6 sCount6 sourceCapacity
@@ -421,7 +421,7 @@ Start_CargoBalancer:
 		set targetDifference stDifference6
 	CargoBalancer_Item6End:
 
-		jump CargoBalancer_SetupVariables equal item7 null
+		jump CargoBalancer_Item7End equal item7 null
 		sensor sCount7 source item7
 		sensor tCount7 target item7
 		op div sFill7 sCount7 sourceCapacity
@@ -444,7 +444,7 @@ Start_CargoBalancer:
 		set targetDifference stDifference7
 	CargoBalancer_Item7End:
 
-		jump CargoBalancer_SetupVariables equal item8 null
+		jump CargoBalancer_Item8End equal item8 null
 		sensor sCount8 source item8
 		sensor tCount8 target item8
 		op div sFill8 sCount8 sourceCapacity
@@ -467,7 +467,7 @@ Start_CargoBalancer:
 		set targetDifference stDifference8
 	CargoBalancer_Item8End:
 
-		jump CargoBalancer_SetupVariables equal item9 null
+		jump CargoBalancer_Item9End equal item9 null
 		sensor sCount9 source item9
 		sensor tCount9 target item9
 		op div sFill9 sCount9 sourceCapacity
@@ -490,7 +490,7 @@ Start_CargoBalancer:
 		set targetDifference stDifference9
 	CargoBalancer_Item9End:
 
-		jump CargoBalancer_SetupVariables equal item10 null
+		jump CargoBalancer_Item10End equal item10 null
 		sensor sCount10 source item10
 		sensor tCount10 target item10
 		op div sFill10 sCount10 sourceCapacity
@@ -513,7 +513,7 @@ Start_CargoBalancer:
 		set targetDifference stDifference10
 	CargoBalancer_Item10End:
 
-		jump CargoBalancer_SetupVariables equal item11 null
+		jump CargoBalancer_Item11End equal item11 null
 		sensor sCount11 source item11
 		sensor tCount11 target item11
 		op div sFill11 sCount11 sourceCapacity
@@ -536,7 +536,7 @@ Start_CargoBalancer:
 		set targetDifference stDifference11
 	CargoBalancer_Item11End:
 
-		jump CargoBalancer_SetupVariables equal item12 null
+		jump CargoBalancer_Item12End equal item12 null
 		sensor sCount12 source item12
 		sensor tCount12 target item12
 		op div sFill12 sCount12 sourceCapacity
@@ -559,7 +559,7 @@ Start_CargoBalancer:
 		set targetDifference stDifference12
 	CargoBalancer_Item12End:
 
-		jump CargoBalancer_SetupVariables equal item13 null
+		jump CargoBalancer_Item13End equal item13 null
 		sensor sCount13 source item13
 		sensor tCount13 target item13
 		op div sFill13 sCount13 sourceCapacity
@@ -582,7 +582,7 @@ Start_CargoBalancer:
 		set targetDifference stDifference13
 	CargoBalancer_Item13End:
 
-		jump CargoBalancer_SetupVariables equal item14 null
+		jump CargoBalancer_Item14End equal item14 null
 		sensor sCount14 source item14
 		sensor tCount14 target item14
 		op div sFill14 sCount14 sourceCapacity
@@ -605,7 +605,7 @@ Start_CargoBalancer:
 		set targetDifference stDifference14
 	CargoBalancer_Item14End:
 
-		jump CargoBalancer_SetupVariables equal item15 null
+		jump CargoBalancer_Item15End equal item15 null
 		sensor sCount15 source item15
 		sensor tCount15 target item15
 		op div sFill15 sCount15 sourceCapacity
@@ -628,7 +628,7 @@ Start_CargoBalancer:
 		set targetDifference stDifference15
 	CargoBalancer_Item15End:
 
-		jump CargoBalancer_SetupVariables equal item16 null
+		jump CargoBalancer_Item16End equal item16 null
 		sensor sCount16 source item16
 		sensor tCount16 target item16
 		op div sFill16 sCount16 sourceCapacity
