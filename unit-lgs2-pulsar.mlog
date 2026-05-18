@@ -1257,19 +1257,10 @@ Start_Mine:
 		ulocate ore core true getOre oreX oreY oreFound building
 		jump Mine_TasksCompleted equal oreFound false
 
-		ulocate spawn core true @copper dangerX dangerY spawnFound spawnBuilding
 		op sub sDistanceX dangerX oreX
 		op sub sDistanceY dangerY oreY
 		op len sDistance sDistanceX sDistanceY
-		jump Mine_UpdateDangerousOre lessThan sDistance spawnRange
-
-		ulocate building turret true @copper dangerX dangerY enemyTurretFound enemyTurret
-		jump Mine_MineOre equal enemyTurretFound false
-
-		op sub sDistanceX dangerX oreX
-		op sub sDistanceY dangerY oreY
-		op len sDistance sDistanceX sDistanceY
-		jump Mine_UpdateDangerousOre lessThan sDistance turretRange
+		jump Mine_UpdateDangerousOre lessThan sDistance dangerRange
 
 		op sub sDistanceX anchorX oreX
 		op sub sDistanceY anchorY oreY
