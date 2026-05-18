@@ -317,12 +317,18 @@ Start_SpawnRetreat:
 		jump End_EnemyTurretRetreat notEqual unitsAttackingBase null
 
 		ulocate spawn core true @copper dangerX dangerY spawnFound spawnBuilding
-		ucontrol within dangerX dangerY spawnRange withinSpawn 0
 		set dangerRange spawnRange
+		jump SpawnRetreat_NoSpawn equal spawnFound false
+		ucontrol within dangerX dangerY spawnRange withinSpawn 0
 		jump End_SpawnRetreat equal withinSpawn false
+		sensor spawnTeam spawnBuilding @team
+		jump SpawnRetreat_NoSpawn equal spawnTeam unitTeam
 		ucontrol boost 1 0 0 0 0
 		ucontrol approach coreX coreY 6 0 0
 		end
+	SpawnRetreat_NoSpawn:
+		set dangerX -1000
+		set dangerY -1000
 End_SpawnRetreat:
 
 

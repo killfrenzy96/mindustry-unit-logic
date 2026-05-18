@@ -210,6 +210,42 @@ Start_GetOutOfTheWay:
 End_GetOutOfTheWay:
 
 
+Start_SpawnRetreat:
+		jump End_EnemyTurretRetreat notEqual unitsAttackingBase null
+
+		ulocate spawn core true @copper dangerX dangerY spawnFound spawnBuilding
+		set dangerRange spawnRange
+		jump SpawnRetreat_NoSpawn equal spawnFound false
+		ucontrol within dangerX dangerY spawnRange withinSpawn 0
+		jump End_SpawnRetreat equal withinSpawn false
+		sensor spawnTeam spawnBuilding @team
+		jump SpawnRetreat_NoSpawn equal spawnTeam unitTeam
+		ucontrol approach coreX coreY 6 0 0
+		end
+	SpawnRetreat_NoSpawn:
+		set dangerX -1000
+		set dangerY -1000
+End_SpawnRetreat:
+
+
+Start_EnemyTurretRetreat:
+		ucontrol within anchorX anchorY anchorRange withinAnchor 0
+		jump End_EnemyTurretRetreat equal withinAnchor true
+
+		ulocate building turret true @copper enemyTurretX enemyTurretY enemyTurretFound enemyTurret
+		jump End_EnemyTurretRetreat equal enemyTurretFound false
+
+		set dangerX enemyTurretX
+		set dangerY enemyTurretY
+		set dangerRange turretRange
+
+		ucontrol within enemyTurretX enemyTurretY turretRange withinEnemyTurret 0
+		jump End_EnemyTurretRetreat equal withinEnemyTurret false
+		ucontrol approach anchorX anchorY 6 0 0
+		end
+End_EnemyTurretRetreat:
+
+
 Start_Mine:
 		ulocate building core false @copper coreX coreY coreFound core
 		sensor coreItemCapacity core @itemCapacity
