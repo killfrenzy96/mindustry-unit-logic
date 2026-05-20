@@ -662,6 +662,8 @@ Start_CargoBalancer:
 		sensor unitItemType @unit @firstItem
 		sensor unitItemCount @unit @totalItems
 		sensor unitController @unit @controller
+		sensor unitDead @unit @dead
+		jump CargoBalancer_ValidatePickup equal unitDead true
 		jump CargoBalancer_ValidateDropoffUnit greaterThan unitItemCount 0
 	CargoBalancer_ValidatePickup:
 		jump CargoBalancer_HandleItemPickup equal itemPickupValid true
