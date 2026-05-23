@@ -7,8 +7,8 @@
 # `source`: The first container. By default, uses the core.
 # `target`: The second container. By default, uses a linked container.
 # `idleAt`: Where the unit should idle when its tasks are completed. If set to `null`, this will instead unbind the unit, which frees up the unit for other processors to use.
-# `sourceWanted` : For the first container, items will not be pushed to this container if it has more than the specified percent of items. Setting this too high may accidentally fill the container, resulting in delivery ships hovering over the container.
-# `targetWanted`: For the second container, items will not be pushed to this container if it has more than the specified percent of items. Setting this too high may accidentally fill the container, resulting in delivery ships hovering over the container.
+# `sourceWanted` : For the first container, items will not be pushed to this container if it has more than the specified percent of items.
+# `targetWanted`: For the second container, items will not be pushed to this container if it has more than the specified percent of items.
 # `keepMinimum`: Items will not be pulled from a container if it has less than the specified percent of items (from 0.0 to 1.0).
 # `minDifference`: The minimum difference in percentage of the fill levels between both containers. If this is set too low, units may end up wasting time by repeatedly picking up and dropping items to the same container.
 # `refreshInterval`: The minimum interval between inventory refreshing. Refreshing the inventory calulations can be very slow, reducing unit responsiveness.
