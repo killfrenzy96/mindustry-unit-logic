@@ -690,6 +690,7 @@ Start_CargoBalancer:
 		jump CargoBalancer_DropItemsToTarget greaterThan heldSourceScore heldTargetScore
 
 	CargoBalancer_DropItemsToSource:
+			jump CargoBalancer_DropItemsToCore greaterThanEq heldSourceFill 0.9999
 			ucontrol boost 1 0 0 0 0
 			ucontrol itemDrop source 9001 0 0 0
 			ucontrol flag @time 0 0 0 0
@@ -705,6 +706,7 @@ Start_CargoBalancer:
 			jump CargoBalancer_Finish always 0 0
 
 	CargoBalancer_DropItemsToTarget:
+			jump CargoBalancer_DropItemsToCore greaterThanEq heldTargetFill 0.9999
 			ucontrol boost 1 0 0 0 0
 			ucontrol itemDrop target 9001 0 0 0
 			ucontrol flag @time 0 0 0 0
@@ -716,6 +718,15 @@ Start_CargoBalancer:
 			jump CargoBalancer_ApproachDropoffSource equal shouldReverse true
 		CargoBalancer_ApproachDropoffTarget:
 			ucontrol move targetX targetY 5 0 0
+			# end
+			jump CargoBalancer_Finish always 0 0
+
+	CargoBalancer_DropItemsToCore:
+			ucontrol boost 1 0 0 0 0
+			ucontrol itemDrop core 9001 0 0 0
+			ucontrol flag @time 0 0 0 0
+			ucontrol within coreX coreY 5 withinRange 0
+			ucontrol move coreX coreY 5 0 0
 			# end
 			jump CargoBalancer_Finish always 0 0
 
