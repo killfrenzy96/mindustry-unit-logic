@@ -12,7 +12,7 @@ Start_Init:
 		set playerMixedFormation false
 		set playerRetreat false
 		set safeAttackMode false
-		set seekEnemyBase false
+		set seekEnemyBase true
 		set spawnRange 50
 		set turretRange 38
 		set coreRepairTarget 0.95
