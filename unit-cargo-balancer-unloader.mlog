@@ -55,6 +55,7 @@ Start_Init:
 		jump Start_SelectUnit equal @unit null
 
 		getlink link 0
+		set firstLink link
 		sensor sourceDead source @dead
 		sensor targetDead target @dead
 		sensor idleAtDead idleAt @dead
@@ -255,6 +256,9 @@ Start_ValidateContainers:
 		sensor targetX target @x
 		sensor targetY target @y
 	ValidateContainers_UpdateTargetCore_End:
+
+		getlink link 0
+		jump ValidateContainers_ResetInit notEqual firstLink link
 
 	ValidateContainers_Begin:
 		sensor sourceDead source @dead
