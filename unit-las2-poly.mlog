@@ -123,6 +123,8 @@ Start_SelectUnit:
 		jump SelectUnit_IterateAndRestart equal newUnitController @this
 		jump SelectUnit_BindNewUnit notEqual newUnitController @unit
 		ucontrol stop 0 0 0 0 0
+		sensor unitController @unit @controller
+		jump SelectUnit_BindNewUnit notEqual unitController @this
 
 		op add @counter @counter unitIndex
 		set unitBind01 @unit
