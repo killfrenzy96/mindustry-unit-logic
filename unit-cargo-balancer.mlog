@@ -52,6 +52,8 @@ Start_Init:
 		op mul unitIndexLimit bindLimit 2
 		op sub unitIndexLimit unitIndexLimit 1
 		jump Start_SelectUnit equal @unit null
+		sensor coreDead @core @dead
+		jump Start_SelectUnit equal coreDead true
 
 		getlink link 0
 		set firstLink link
