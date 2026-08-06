@@ -400,11 +400,15 @@ Start_EnemyUnits:
 			jump EnemyUnits_HideBehindBuilding_TestShootBuilding equal allyBuilding null
 			sensor allyBuildingTeam allyBuilding @team
 			jump EnemyUnits_HideBehindBuilding_TestShootBuilding notEqual allyBuildingTeam unitTeam
+			sensor allyBuildingSolid allyBuilding @solid
+			jump EnemyUnits_HideBehindBuilding_TestShootBuilding equal allyBuildingSolid false
 			jump EnemyUnits_HideBehindBuilding_UpdateBestBuilding always 0 0
 
 		EnemyUnits_HideBehindBuilding_TestDamagedBuilding:
 			ulocate damaged core true @copper allyBuildingX allyBuildingY allyBuildingFound allyBuilding
 			jump EnemyUnits_HideBehindBuilding_TestBestBuilding equal allyBuilding null
+			sensor allyBuildingSolid allyBuilding @solid
+			jump EnemyUnits_HideBehindBuilding_TestBestBuilding equal allyBuildingSolid false
 			jump EnemyUnits_HideBehindBuilding_UpdateBestBuilding always 0 0
 
 		EnemyUnits_HideBehindBuilding_TestShootBuilding:
@@ -415,6 +419,8 @@ Start_EnemyUnits:
 			jump EnemyUnits_HideBehindBuilding_TestDamagedBuilding equal allyBuilding null
 			sensor allyBuildingTeam allyBuilding @team
 			jump EnemyUnits_HideBehindBuilding_TestDamagedBuilding notEqual allyBuildingTeam unitTeam
+			sensor allyBuildingSolid allyBuilding @solid
+			jump EnemyUnits_HideBehindBuilding_TestDamagedBuilding equal allyBuildingSolid false
 			jump EnemyUnits_HideBehindBuilding_UpdateBestBuilding always 0 0
 
 		EnemyUnits_HideBehindBuilding_TestBestBuilding:
